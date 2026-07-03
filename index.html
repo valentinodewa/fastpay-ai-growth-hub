@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BUILD: FASTPAY-RBAC-V1.1-20260703 -->
+
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -831,7 +831,7 @@ tbody tr:hover { background:color-mix(in srgb,var(--surface-2) 70%, transparent)
             <div class="card card-pad">
               <div class="card-head"><div><div class="card-title">Migration Note</div><div class="card-sub">Status kompatibilitas dengan code.gs lama</div></div></div>
               <div class="data-warning" style="color:#93c5fd;background:rgba(55,136,255,.08);border-color:rgba(55,136,255,.2)">Akses tampilan berbasis role sudah aktif. Manager dan Admin dapat membuka seluruh fitur; Staff hanya dapat membuka Overview personal, AI Worklog, Prompt Library, dan Marketing Impact personal.</div>
-              <div class="health-row"><span>Frontend version</span><strong>Fastpay AI Growth Hub v1.1 RBAC</strong></div>
+              <div class="health-row"><span>Frontend version</span><strong>Fastpay AI Growth Hub v1.2 RBAC Dynamic Workstream</strong></div>
               <div class="health-row"><span>Worklog format</span><strong>FASTPAY_AI_WORKLOG_V1</strong></div>
               <div class="health-row"><span>Backend compatibility</span><strong style="color:#6ee7b7">Compatible</strong></div>
             </div>
@@ -860,7 +860,7 @@ const STORAGE = {
   api: 'fp_ai_api_url', user: 'fp_ai_user', token: 'fp_ai_token', theme: 'fp_ai_theme',
   entries: 'fp_ai_entries_v1', members: 'fp_ai_members_v1', profile: 'fp_ai_last_profile', auth: 'fp_ai_auth_profile'
 };
-const WORKSTREAMS = ['Performance Marketing','Content & Social Media','Creative & Design','KOL & Influencer','ASO & Play Store','CRM & Retention','Data & Analytics','Brand Activation','Leadership & Strategy'];
+const WORKSTREAMS = ['Performance Marketing','Content & Social Media','Creative & Design','KOL & Influencer','ASO & Play Store','CRM & Retention','Data & Analytics','Brand Activation','Leadership & Strategy','UI/UX'];
 const TASKS = ['Hook & Headline','Copywriting Ads','Script Video','Caption & Social Copy','Brief Design','Visual Prompt','Content Planning','Ads Analysis','Audience Hypothesis','Creative Testing','Budget Allocation','Funnel Analysis','Cohort Analysis','Forecast & Reporting','KOL Mapping','Brief Endorsement','ASO Keyword Research','Store Listing Copy','CRM Message','Retargeting Strategy','Quick Win & Action Plan','Meeting Summary','Research & Benchmark','Automation / Coding','Lainnya'];
 const CHANNELS = ['Meta Ads','Google Ads','TikTok Ads','TikTok Organic','Instagram','Facebook','YouTube','Google Play Store','WhatsApp / CRM','KOL / Influencer','Website / Landing Page','Internal Report','Multi-channel','Lainnya'];
 const AI_TOOLS = ['ChatGPT','Gemini','Claude','Copilot','Perplexity','Canva AI','Midjourney','Runway','Lainnya'];
@@ -1043,13 +1043,38 @@ async function initApp(){
   renderAll();
 }
 
-function setupStaticOptions(){
+function getAvailableWorkstreams(){
+  const values=[
+    ...WORKSTREAMS,
+    state.profile?.team,
+    ...state.members.map(m=>m.team),
+    ...state.entries.map(e=>e.team)
+  ];
+  return [...new Set(values.map(v=>String(v||'').trim()).filter(Boolean))];
+}
+function populateWorkstreamOptions(){
+  const workstreams=getAvailableWorkstreams();
   const ws=document.getElementById('fWorkstream');
-  ws.innerHTML='<option value="">Pilih workstream</option>'+WORKSTREAMS.map(x=>`<option>${escapeHtml(x)}</option>`).join('');
+  const current=String(ws?.value||state.profile?.team||'').trim();
+  if(ws){
+    ws.innerHTML='<option value="">Pilih workstream</option>'+workstreams.map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join('');
+    if(current){
+      if(!workstreams.includes(current)) ws.insertAdjacentHTML('beforeend',`<option value="${escapeHtml(current)}">${escapeHtml(current)}</option>`);
+      ws.value=current;
+    }
+  }
+  const library=document.getElementById('libraryWorkstream');
+  if(library){
+    const libraryCurrent=library.value||'all';
+    library.innerHTML='<option value="all">Semua Workstream</option>'+workstreams.map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join('');
+    library.value=workstreams.includes(libraryCurrent)||libraryCurrent==='all'?libraryCurrent:'all';
+  }
+}
+function setupStaticOptions(){
+  populateWorkstreamOptions();
   document.getElementById('fTask').innerHTML='<option value="">Pilih jenis pekerjaan</option>'+TASKS.map(x=>`<option>${escapeHtml(x)}</option>`).join('');
   document.getElementById('fChannel').innerHTML='<option value="">Pilih channel</option>'+CHANNELS.map(x=>`<option>${escapeHtml(x)}</option>`).join('');
   document.getElementById('toolPills').innerHTML=AI_TOOLS.map(x=>`<button type="button" class="tool-pill" data-tool="${escapeHtml(x)}" onclick="toggleTool(this)">${escapeHtml(x)}</button>`).join('');
-  document.getElementById('libraryWorkstream').innerHTML='<option value="all">Semua Workstream</option>'+WORKSTREAMS.map(x=>`<option>${escapeHtml(x)}</option>`).join('');
   document.getElementById('libraryTask').innerHTML='<option value="all">Semua Use Case</option>'+TASKS.map(x=>`<option>${escapeHtml(x)}</option>`).join('');
   document.getElementById('fDataClass').addEventListener('change',e=>{
     const bad=['Rahasia','Mengandung Data Pelanggan'].includes(e.target.value);
@@ -1065,6 +1090,8 @@ async function loadMembers(){
     saveJSON(STORAGE.members,state.members);
     resolveProfileFromMembers();
     populateMembers();
+    populateWorkstreamOptions();
+    hydrateProfile();
     applyRoleAccess();
   } catch(err){ console.warn('Members:',err); populateMembers(); }
 }
@@ -1075,6 +1102,8 @@ async function loadEntries(){
     if(!Array.isArray(rows)) throw new Error(rows.message||'Data worklog tidak valid');
     state.entries=rows.map(normalizeServerEntry).sort((a,b)=>`${b.date} ${b.time}`.localeCompare(`${a.date} ${a.time}`));
     saveJSON(STORAGE.entries,state.entries);
+    populateWorkstreamOptions();
+    hydrateProfile();
   } catch(err){ toast(`Menggunakan cache lokal: ${err.message}`,'warning'); }
 }
 
@@ -1137,10 +1166,14 @@ function populateMembers(){
 }
 function hydrateProfile(){
   const saved=loadJSON(STORAGE.profile,{}), auth=state.profile||{};
-  const name=auth.name||saved.name||'', workstream=auth.team||saved.workstream||'';
+  const name=auth.name||saved.name||'', workstream=String(auth.team||saved.workstream||'').trim();
   const nameEl=document.getElementById('fName'), wsEl=document.getElementById('fWorkstream');
   if(name) nameEl.value=name;
-  if(workstream&&WORKSTREAMS.includes(workstream)) wsEl.value=workstream;
+  if(workstream){
+    const exists=[...wsEl.options].some(option=>option.value===workstream);
+    if(!exists) wsEl.insertAdjacentHTML('beforeend',`<option value="${escapeHtml(workstream)}">${escapeHtml(workstream)}</option>`);
+    wsEl.value=workstream;
+  }
   const locked=Boolean(auth.name&&auth.team);
   nameEl.readOnly=locked;
   wsEl.disabled=locked;
@@ -1150,9 +1183,14 @@ function hydrateProfile(){
 function autofillMember(){
   const name=document.getElementById('fName').value.trim().toLowerCase();
   const m=state.members.find(x=>x.name.trim().toLowerCase()===name);
-  if(m){
-    const ws=WORKSTREAMS.includes(m.team)?m.team:'';
-    if(ws) document.getElementById('fWorkstream').value=ws;
+  if(m&&m.team){
+    populateWorkstreamOptions();
+    const wsEl=document.getElementById('fWorkstream');
+    const team=String(m.team).trim();
+    if(![...wsEl.options].some(option=>option.value===team)){
+      wsEl.insertAdjacentHTML('beforeend',`<option value="${escapeHtml(team)}">${escapeHtml(team)}</option>`);
+    }
+    wsEl.value=team;
   }
 }
 
