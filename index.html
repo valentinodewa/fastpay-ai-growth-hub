@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1020">
+<title>Fastpay AI Growth Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
+
+:root {
+  --bg: #080c16;
+  --surface: #101625;
+  --surface-2: #151d2f;
+  --surface-3: #1b253a;
+  --border: rgba(255,255,255,.09);
+  --border-strong: rgba(255,255,255,.16);
+  --text: #f7f9fc;
+  --text-2: #b8c2d6;
+  --muted: #71809a;
+  --red: #ef2b3a;
+  --red-2: #ff5260;
+  --blue: #3788ff;
+  --cyan: #19c7d6;
+  --green: #20c98b;
+  --amber: #f4b740;
+  --purple: #9b6cff;
+  --danger: #ff5c70;
+  --shadow: 0 24px 60px rgba(0,0,0,.28);
+  --radius: 18px;
+  --sidebar: 256px;
+  --font: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+:root.light {
+  --bg: #f2f5f9;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --surface-3: #edf2f7;
+  --border: rgba(15,23,42,.09);
+  --border-strong: rgba(15,23,42,.16);
+  --text: #111827;
+  --text-2: #475569;
+  --muted: #7b889d;
+  --shadow: 0 20px 50px rgba(15,23,42,.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  min-height: 100vh;
+  font-family: var(--font);
+  background:
+    radial-gradient(circle at 10% -10%, rgba(239,43,58,.16), transparent 30%),
+    radial-gradient(circle at 100% 0%, rgba(55,136,255,.14), transparent 32%),
+    var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+.hidden { display: none !important; }
+.mono { font-family: var(--mono); }
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(148,163,184,.25); border-radius: 999px; }
+
+/* Shared */
+.btn {
+  min-height: 42px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-2);
+  border-radius: 11px;
+  padding: 10px 15px;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: .2s ease;
+}
+.btn:hover { transform: translateY(-1px); border-color: var(--border-strong); color: var(--text); }
+.btn-primary {
+  background: linear-gradient(135deg, var(--red), #d51e32);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 10px 24px rgba(239,43,58,.24);
+}
+.btn-primary:hover { box-shadow: 0 14px 30px rgba(239,43,58,.34); }
+.btn-ghost { background: transparent; }
+.btn-danger:hover { border-color: rgba(255,92,112,.45); color: var(--danger); }
+.icon-btn { width: 42px; padding: 0; }
+
+.card {
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.card-pad { padding: 22px; }
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.card-title { font-size: 15px; font-weight: 800; letter-spacing: -.01em; }
+.card-sub { color: var(--muted); font-size: 12px; margin-top: 3px; }
+.section-title { font-size: 24px; font-weight: 800; letter-spacing: -.035em; }
+.section-desc { color: var(--text-2); font-size: 13px; margin-top: 5px; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.badge-green { color: #6ee7b7; background: rgba(32,201,139,.1); border-color: rgba(32,201,139,.25); }
+.badge-blue { color: #93c5fd; background: rgba(55,136,255,.1); border-color: rgba(55,136,255,.25); }
+.badge-red { color: #fda4af; background: rgba(239,43,58,.1); border-color: rgba(239,43,58,.25); }
+.badge-amber { color: #fcd34d; background: rgba(244,183,64,.1); border-color: rgba(244,183,64,.25); }
+.badge-purple { color: #c4b5fd; background: rgba(155,108,255,.1); border-color: rgba(155,108,255,.25); }
+
+input, select, textarea {
+  width: 100%;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 11px 13px;
+  outline: none;
+  transition: .2s ease;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: rgba(55,136,255,.7);
+  box-shadow: 0 0 0 3px rgba(55,136,255,.13);
+}
+textarea { resize: vertical; min-height: 112px; }
+select option { background: var(--surface); color: var(--text); }
+label { display: block; color: var(--text-2); font-size: 11px; font-weight: 800; letter-spacing: .055em; text-transform: uppercase; margin-bottom: 7px; }
+.field-note { margin-top: 6px; color: var(--muted); font-size: 11px; }
+.form-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+.form-grid-3 { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
+.field-full { grid-column: 1 / -1; }
+
+/* Entry screens */
+.entry-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+}
+.entry-layout {
+  width: min(1040px, 100%);
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  overflow: hidden;
+  border-radius: 28px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 30px 90px rgba(0,0,0,.38);
+}
+.entry-brand {
+  min-height: 620px;
+  padding: 54px;
+  background:
+    linear-gradient(145deg, rgba(239,43,58,.94), rgba(121,20,39,.9)),
+    radial-gradient(circle at 80% 10%, rgba(255,255,255,.18), transparent 35%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+.entry-brand::after {
+  content: '';
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border: 56px solid rgba(255,255,255,.08);
+  border-radius: 50%;
+  right: -130px;
+  bottom: -120px;
+}
+.brand-mark { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 20px; }
+.brand-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: grid; place-items: center;
+  color: var(--red); background: #fff; font-weight: 900; font-size: 23px;
+}
+.entry-brand h1 { font-size: clamp(34px,5vw,54px); line-height: 1.04; letter-spacing: -.055em; max-width: 540px; margin-top: 48px; }
+.entry-brand p { margin-top: 18px; color: rgba(255,255,255,.82); max-width: 500px; }
+.entry-benefits { display: grid; gap: 11px; margin-top: 34px; }
+.entry-benefit { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; }
+.entry-benefit span { width: 27px; height: 27px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,255,255,.14); }
+.entry-form { padding: 54px 44px; display: flex; flex-direction: column; justify-content: center; }
+.entry-form h2 { font-size: 28px; letter-spacing: -.04em; }
+.entry-form > p { color: var(--muted); font-size: 13px; margin: 8px 0 28px; }
+.login-error { display: none; margin: 14px 0; padding: 11px 13px; border-radius: 10px; color: #fecdd3; background: rgba(239,43,58,.1); border: 1px solid rgba(239,43,58,.25); font-size: 12px; }
+.entry-foot { margin-top: 18px; color: var(--muted); font-size: 11px; text-align: center; }
+.setup-steps { display: grid; gap: 10px; margin: 18px 0 24px; }
+.setup-step { display: flex; gap: 11px; padding: 12px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text-2); font-size: 12px; }
+.setup-step b { width: 25px; height: 25px; flex: 0 0 25px; display: grid; place-items: center; border-radius: 8px; background: rgba(55,136,255,.12); color: #93c5fd; }
+
+/* App shell */
+#appScreen { display: none; }
+.app-shell { min-height: 100vh; display: grid; grid-template-columns: var(--sidebar) minmax(0,1fr); }
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--sidebar);
+  padding: 22px 16px;
+  background: rgba(10,14,25,.92);
+  border-right: 1px solid var(--border);
+  backdrop-filter: blur(18px);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+:root.light .sidebar { background: rgba(255,255,255,.94); }
+.side-brand { display: flex; align-items: center; gap: 10px; padding: 6px 8px 20px; }
+.side-brand .brand-icon { background: linear-gradient(135deg,var(--red),#d7162d); color: #fff; box-shadow: 0 10px 22px rgba(239,43,58,.25); }
+.side-brand-name { font-weight: 800; font-size: 16px; line-height: 1.1; }
+.side-brand-sub { color: var(--muted); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; margin-top: 4px; }
+.side-label { padding: 18px 10px 8px; color: var(--muted); font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.nav { display: grid; gap: 5px; }
+.nav-btn {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+  transition: .18s ease;
+}
+.nav-btn:hover { color: var(--text); background: var(--surface-2); }
+.nav-btn.active { color: #fff; background: linear-gradient(135deg,var(--red),#ca1c30); box-shadow: 0 10px 22px rgba(239,43,58,.2); }
+.nav-ico { width: 22px; font-size: 17px; text-align: center; }
+.side-bottom { margin-top: auto; }
+.connection-card { padding: 13px; border: 1px solid var(--border); border-radius: 13px; background: var(--surface-2); }
+.connection-row { display: flex; align-items: center; gap: 8px; color: var(--text-2); font-size: 11px; font-weight: 700; }
+.conn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 10px currentColor; }
+.conn-dot.online { background: var(--green); }
+.conn-dot.error { background: var(--danger); }
+.connection-card p { margin-top: 7px; color: var(--muted); font-size: 10px; }
+
+.app-main { grid-column: 2; min-width: 0; }
+.topbar {
+  height: 74px;
+  padding: 0 28px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb,var(--bg) 82%, transparent);
+  backdrop-filter: blur(18px);
+}
+.top-left { min-width: 0; }
+.top-title { font-weight: 800; font-size: 16px; }
+.top-date { color: var(--muted); font-size: 11px; margin-top: 2px; }
+.top-actions { display: flex; align-items: center; gap: 9px; }
+.profile-chip { display: flex; align-items: center; gap: 10px; padding: 5px 9px 5px 5px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); }
+.avatar { width: 33px; height: 33px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg,var(--red),var(--purple)); color:#fff; font-weight:800; font-size:12px; }
+.profile-name { font-size: 11px; font-weight: 800; max-width: 145px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profile-role { color: var(--muted); font-size: 9px; }
+.mobile-menu { display: none; }
+
+.content { padding: 26px 28px 48px; max-width: 1520px; margin: 0 auto; }
+.view { display: none; animation: fade .28s ease; }
+.view.active { display: block; }
+@keyframes fade { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform:none; } }
+.view-head { display:flex; justify-content:space-between; align-items:flex-end; gap:18px; margin-bottom:22px; }
+
+/* Overview */
+.hero {
+  min-height: 210px;
+  padding: 28px;
+  display: grid;
+  grid-template-columns: 1.4fr .6fr;
+  align-items: center;
+  background:
+    linear-gradient(130deg, rgba(239,43,58,.92), rgba(129,19,45,.92)),
+    radial-gradient(circle at 90% 0%, rgba(255,255,255,.2), transparent 34%);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+.hero::before { content:''; position:absolute; inset:auto -80px -160px auto; width:360px; height:360px; border:62px solid rgba(255,255,255,.08); border-radius:50%; }
+.hero-copy { position:relative; z-index:2; }
+.hero-kicker { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.16em; opacity:.8; }
+.hero h1 { margin-top:9px; font-size: clamp(27px,4vw,43px); line-height:1.08; letter-spacing:-.05em; max-width:720px; }
+.hero p { color: rgba(255,255,255,.8); margin-top:12px; max-width:650px; font-size:13px; }
+.hero-actions { display:flex; gap:10px; margin-top:22px; flex-wrap:wrap; }
+.hero .btn-primary { background:#fff; color:var(--red); box-shadow:none; }
+.hero .btn-ghost { border-color:rgba(255,255,255,.28); color:#fff; background:rgba(255,255,255,.08); }
+.hero-orb { justify-self:end; width:150px; height:150px; border-radius:50%; display:grid; place-items:center; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); font-size:62px; position:relative; z-index:2; }
+
+.kpi-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; margin-bottom:18px; }
+.kpi { padding:18px; min-width:0; }
+.kpi-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.kpi-icon { width:38px; height:38px; border-radius:11px; display:grid; place-items:center; background:rgba(55,136,255,.12); font-size:18px; }
+.kpi-trend { font-size:10px; font-weight:800; color:var(--green); }
+.kpi-value { margin-top:18px; font-size:28px; line-height:1; font-weight:800; letter-spacing:-.045em; }
+.kpi-label { margin-top:7px; color:var(--text-2); font-size:11px; font-weight:700; }
+.kpi-note { margin-top:4px; color:var(--muted); font-size:9px; }
+
+.grid-2 { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr); gap:18px; margin-bottom:18px; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin-bottom:18px; }
+.chart-list { display:grid; gap:14px; }
+.chart-row { display:grid; grid-template-columns:minmax(100px,170px) minmax(80px,1fr) 50px; gap:12px; align-items:center; }
+.chart-name { font-size:11px; font-weight:700; color:var(--text-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bar-track { height:8px; border-radius:999px; background:var(--surface-3); overflow:hidden; }
+.bar-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,var(--red),var(--red-2)); transition:width .65s ease; }
+.bar-fill.blue { background:linear-gradient(90deg,var(--blue),var(--cyan)); }
+.chart-value { font-family:var(--mono); font-size:10px; color:var(--text-2); text-align:right; }
+
+.leader-list { display:grid; gap:8px; }
+.leader-row { display:grid; grid-template-columns:34px 1fr auto; gap:10px; align-items:center; padding:10px; border-radius:12px; background:var(--surface-2); border:1px solid transparent; }
+.leader-row:hover { border-color:var(--border); }
+.rank { width:30px; height:30px; display:grid; place-items:center; border-radius:9px; background:var(--surface-3); font-family:var(--mono); font-size:11px; font-weight:800; }
+.rank.gold { color:#fcd34d; background:rgba(244,183,64,.12); }
+.leader-name { font-size:12px; font-weight:800; }
+.leader-meta { color:var(--muted); font-size:9px; margin-top:2px; }
+.score { font-family:var(--mono); font-weight:800; font-size:12px; color:#93c5fd; }
+
+.analysis-box { color:var(--text-2); font-size:12px; line-height:1.75; max-height:360px; overflow:auto; padding-right:5px; }
+.analysis-box h3 { margin:14px 0 6px; color:var(--text); font-size:12px; }
+.analysis-box strong { color:var(--text); }
+.empty-state { text-align:center; padding:34px 18px; color:var(--muted); font-size:12px; }
+.empty-state .empty-icon { font-size:32px; margin-bottom:8px; }
+
+.missing-wrap { display:flex; flex-wrap:wrap; gap:7px; }
+.missing-person { padding:7px 10px; border:1px solid rgba(239,43,58,.2); background:rgba(239,43,58,.08); color:#fda4af; border-radius:999px; font-size:10px; font-weight:700; }
+
+/* Tables */
+.table-wrap { overflow:auto; border:1px solid var(--border); border-radius:14px; }
+table { width:100%; border-collapse:collapse; min-width:860px; }
+th { padding:12px 14px; text-align:left; background:var(--surface-2); color:var(--muted); font-size:9px; text-transform:uppercase; letter-spacing:.08em; border-bottom:1px solid var(--border); }
+td { padding:13px 14px; border-bottom:1px solid var(--border); font-size:11px; color:var(--text-2); vertical-align:middle; }
+tr:last-child td { border-bottom:0; }
+tbody tr:hover { background:color-mix(in srgb,var(--surface-2) 70%, transparent); }
+.cell-main { color:var(--text); font-weight:800; font-size:11px; }
+.cell-sub { color:var(--muted); font-size:9px; margin-top:2px; }
+.prompt-cell { max-width:330px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.row-actions { display:flex; gap:6px; }
+.mini-btn { width:31px; height:31px; display:grid; place-items:center; border-radius:9px; border:1px solid var(--border); background:var(--surface-2); color:var(--text-2); }
+.mini-btn:hover { color:var(--text); border-color:var(--border-strong); }
+
+/* Worklog */
+.worklog-layout { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(290px,.65fr); gap:18px; }
+.form-section { padding:21px; border:1px solid var(--border); border-radius:15px; background:var(--surface-2); margin-bottom:15px; }
+.form-section-title { display:flex; align-items:center; gap:9px; font-size:13px; font-weight:800; margin-bottom:16px; }
+.form-section-title span { width:28px; height:28px; border-radius:9px; display:grid; place-items:center; background:rgba(55,136,255,.12); }
+.tool-pills { display:flex; flex-wrap:wrap; gap:8px; }
+.tool-pill { border:1px solid var(--border); background:var(--surface); color:var(--text-2); border-radius:999px; padding:8px 12px; font-size:11px; font-weight:700; }
+.tool-pill.active { color:#fff; border-color:transparent; background:linear-gradient(135deg,var(--blue),#2765d6); box-shadow:0 7px 16px rgba(55,136,255,.2); }
+.range-row { display:grid; grid-template-columns:1fr 1fr auto; gap:10px; align-items:end; }
+.time-saved { min-height:42px; padding:10px 12px; border-radius:11px; background:rgba(32,201,139,.1); border:1px solid rgba(32,201,139,.22); color:#6ee7b7; font-family:var(--mono); font-size:11px; display:flex; align-items:center; }
+.data-warning { padding:13px; border-radius:12px; background:rgba(244,183,64,.08); border:1px solid rgba(244,183,64,.2); color:#fcd34d; font-size:11px; line-height:1.6; }
+.side-guide { position:sticky; top:94px; }
+.guide-list { display:grid; gap:12px; }
+.guide-item { display:flex; gap:10px; color:var(--text-2); font-size:11px; }
+.guide-num { width:25px; height:25px; flex:0 0 25px; display:grid; place-items:center; border-radius:8px; background:rgba(239,43,58,.1); color:#fda4af; font-family:var(--mono); font-weight:800; }
+
+/* Library */
+.toolbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+.toolbar .search { min-width:260px; flex:1; }
+.library-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:15px; }
+.prompt-card { padding:18px; display:flex; flex-direction:column; min-height:270px; }
+.prompt-card-head { display:flex; justify-content:space-between; gap:10px; }
+.prompt-card h3 { font-size:13px; line-height:1.35; margin-top:13px; }
+.prompt-preview { color:var(--text-2); font-size:11px; line-height:1.65; margin:10px 0 14px; display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; }
+.prompt-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:auto; }
+.prompt-card-foot { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; padding-top:13px; border-top:1px solid var(--border); }
+.creator { font-size:10px; color:var(--muted); }
+
+/* Analytics */
+.analytics-kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-bottom:18px; }
+.score-circle { width:82px; height:82px; border-radius:50%; display:grid; place-items:center; background:conic-gradient(var(--red) calc(var(--score)*1%),var(--surface-3) 0); position:relative; }
+.score-circle::after { content:''; width:62px; height:62px; position:absolute; border-radius:50%; background:var(--surface); }
+.score-circle span { position:relative; z-index:2; font-family:var(--mono); font-weight:800; font-size:15px; }
+.member-score { display:flex; align-items:center; gap:12px; }
+
+/* Modal + toast */
+.modal-layer { display:none; position:fixed; inset:0; background:rgba(3,7,18,.72); backdrop-filter:blur(8px); z-index:100; align-items:center; justify-content:center; padding:20px; }
+.modal-layer.show { display:flex; }
+.modal { width:min(760px,100%); max-height:88vh; overflow:auto; background:var(--surface); border:1px solid var(--border); border-radius:21px; box-shadow:0 35px 100px rgba(0,0,0,.5); }
+.modal-head { position:sticky; top:0; z-index:2; display:flex; justify-content:space-between; align-items:center; gap:12px; padding:18px 21px; background:var(--surface); border-bottom:1px solid var(--border); }
+.modal-body { padding:21px; }
+.detail-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.detail-item { padding:12px; background:var(--surface-2); border:1px solid var(--border); border-radius:12px; }
+.detail-label { color:var(--muted); font-size:9px; text-transform:uppercase; font-weight:800; letter-spacing:.08em; }
+.detail-value { color:var(--text-2); font-size:11px; margin-top:5px; word-break:break-word; white-space:pre-wrap; }
+.detail-full { grid-column:1/-1; }
+.toast { position:fixed; right:22px; bottom:22px; max-width:380px; padding:13px 16px; border-radius:12px; background:var(--surface-2); border:1px solid var(--border); box-shadow:var(--shadow); color:var(--text); font-size:12px; font-weight:700; transform:translateY(60px); opacity:0; pointer-events:none; transition:.25s ease; z-index:200; }
+.toast.show { transform:none; opacity:1; }
+
+/* Admin */
+.admin-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+.member-list { display:grid; gap:8px; max-height:430px; overflow:auto; }
+.member-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px; border-radius:11px; background:var(--surface-2); }
+.member-info { display:flex; align-items:center; gap:10px; min-width:0; }
+.member-info .avatar { width:31px; height:31px; }
+.member-name { color:var(--text); font-size:11px; font-weight:800; }
+.member-team { color:var(--muted); font-size:9px; }
+.health-row { display:flex; justify-content:space-between; gap:12px; padding:11px 0; border-bottom:1px solid var(--border); font-size:11px; }
+.health-row:last-child { border-bottom:0; }
+
+@media (max-width: 1180px) {
+  .kpi-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .library-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .grid-3 { grid-template-columns:1fr 1fr; }
+}
+@media (max-width: 960px) {
+  :root { --sidebar: 76px; }
+  .side-brand-name,.side-brand-sub,.nav-text,.side-label,.connection-card p,.connection-row span { display:none; }
+  .side-brand { justify-content:center; padding-inline:0; }
+  .nav-btn { justify-content:center; padding:10px; }
+  .nav-ico { width:auto; }
+  .connection-card { display:grid; place-items:center; padding:12px; }
+  .grid-2,.worklog-layout { grid-template-columns:1fr; }
+  .side-guide { position:static; }
+  .hero { grid-template-columns:1fr; }
+  .hero-orb { display:none; }
+  .analytics-kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 760px) {
+  .entry-layout { grid-template-columns:1fr; }
+  .entry-brand { min-height:auto; padding:32px; }
+  .entry-brand h1 { font-size:34px; margin-top:34px; }
+  .entry-form { padding:36px 26px; }
+  .app-shell { display:block; }
+  .sidebar { transform:translateX(-110%); width:260px; transition:.25s ease; box-shadow:var(--shadow); }
+  .sidebar.open { transform:none; }
+  .side-brand-name,.side-brand-sub,.nav-text,.side-label,.connection-card p,.connection-row span { display:block; }
+  .nav-btn { justify-content:flex-start; padding:10px 12px; }
+  .connection-card { display:block; padding:13px; }
+  .app-main { grid-column:auto; }
+  .mobile-menu { display:inline-flex; }
+  .topbar { padding:0 16px; height:66px; }
+  .content { padding:20px 14px 40px; }
+  .profile-name,.profile-role { display:none; }
+  .profile-chip { padding-right:5px; }
+  .hero { padding:23px; min-height:230px; }
+  .kpi-grid,.grid-3,.library-grid,.admin-grid { grid-template-columns:1fr; }
+  .kpi-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .form-grid,.form-grid-3,.detail-grid { grid-template-columns:1fr; }
+  .detail-full { grid-column:auto; }
+  .field-full { grid-column:auto; }
+  .range-row { grid-template-columns:1fr 1fr; }
+  .time-saved { grid-column:1/-1; }
+  .view-head { align-items:flex-start; flex-direction:column; }
+  .chart-row { grid-template-columns:110px 1fr 42px; }
+}
+@media (max-width: 480px) {
+  .entry-screen { padding:0; align-items:stretch; }
+  .entry-layout { border-radius:0; min-height:100vh; }
+  .entry-brand { padding:26px 22px; }
+  .entry-brand p,.entry-benefits { display:none; }
+  .entry-form { padding:30px 20px; }
+  .top-title { font-size:13px; }
+  .top-date { display:none; }
+  .kpi-grid { grid-template-columns:1fr 1fr; gap:9px; }
+  .kpi { padding:14px; }
+  .kpi-value { font-size:23px; }
+  .hero h1 { font-size:28px; }
+  .hero-actions .btn { width:100%; }
+  .toolbar > * { width:100%; }
+  .toolbar .search { min-width:0; }
+  .analytics-kpis { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- SETUP -->
+<section id="setupScreen" class="entry-screen hidden">
+  <div class="entry-layout">
+    <div class="entry-brand">
+      <div>
+        <div class="brand-mark"><div class="brand-icon">F</div><span>Fastpay AI Growth Hub</span></div>
+        <h1>Hubungkan frontend ke pusat data AI tim.</h1>
+        <p>Gunakan endpoint Google Apps Script agar worklog, prompt, dan analisis tim tersimpan ke Google Sheets.</p>
+      </div>
+      <div class="entry-benefits">
+        <div class="entry-benefit"><span>1</span> Deploy <code>code.gs</code> sebagai Web App</div>
+        <div class="entry-benefit"><span>2</span> Izinkan akses Web App untuk pengguna yang sesuai</div>
+        <div class="entry-benefit"><span>3</span> Tempel URL berakhiran <code>/exec</code></div>
+      </div>
+    </div>
+    <div class="entry-form">
+      <h2>Konfigurasi API</h2>
+      <p>Konfigurasi ini hanya disimpan di browser perangkat yang digunakan.</p>
+      <div class="setup-steps">
+        <div class="setup-step"><b>1</b><span>Buka Google Sheets → Ekstensi → Apps Script.</span></div>
+        <div class="setup-step"><b>2</b><span>Deploy sebagai Web App dan salin URL deployment.</span></div>
+        <div class="setup-step"><b>3</b><span>Masukkan URL endpoint di bawah.</span></div>
+      </div>
+      <div>
+        <label for="setupApi">Google Apps Script Web App URL</label>
+        <input id="setupApi" type="url" placeholder="https://script.google.com/macros/s/.../exec">
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:15px" onclick="saveSetup()">Simpan dan Hubungkan</button>
+      <div class="entry-foot">Fastpay internal productivity system</div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGIN -->
+<section id="loginScreen" class="entry-screen">
+  <div class="entry-layout">
+    <div class="entry-brand">
+      <div>
+        <div class="brand-mark"><div class="brand-icon">F</div><span>Fastpay AI Growth Hub</span></div>
+        <h1>Dari penggunaan AI menjadi dampak marketing.</h1>
+        <p>Catat workflow, simpan prompt terbaik, ukur efisiensi waktu, dan hubungkan kontribusi AI dengan hasil Digital Marketing Fastpay.</p>
+        <div class="entry-benefits">
+          <div class="entry-benefit"><span>✓</span> Daily AI Worklog yang terstruktur</div>
+          <div class="entry-benefit"><span>✓</span> Prompt Library milik tim</div>
+          <div class="entry-benefit"><span>✓</span> Productivity & Marketing Impact Dashboard</div>
+        </div>
+      </div>
+      <div style="font-size:11px;opacity:.65">ANDALAN AGEN INDONESIA</div>
+    </div>
+    <div class="entry-form">
+      <h2>Selamat datang</h2>
+      <p>Masuk menggunakan email yang sudah didaftarkan oleh admin.</p>
+      <div style="margin-bottom:15px">
+        <label for="loginEmail">Email perusahaan</label>
+        <input id="loginEmail" type="email" autocomplete="email" placeholder="nama@fastpay.co.id">
+      </div>
+      <div>
+        <label for="loginPassword">Password akses</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Masukkan password">
+      </div>
+      <div id="loginError" class="login-error"></div>
+      <button id="loginBtn" class="btn btn-primary" style="width:100%;margin-top:16px" onclick="login()">Masuk ke Growth Hub →</button>
+      <div class="entry-foot">Akses terbatas untuk anggota Digital Marketing Fastpay</div>
+    </div>
+  </div>
+</section>
+
+<!-- APP -->
+<section id="appScreen">
+  <div class="app-shell">
+    <aside id="sidebar" class="sidebar">
+      <div class="side-brand">
+        <div class="brand-icon">F</div>
+        <div>
+          <div class="side-brand-name">AI Growth Hub</div>
+          <div class="side-brand-sub">Digital Marketing Fastpay</div>
+        </div>
+      </div>
+
+      <div class="side-label">Workspace</div>
+      <nav class="nav">
+        <button class="nav-btn active" data-view="overview" onclick="navigate('overview',this)"><span class="nav-ico">◫</span><span class="nav-text">Overview</span></button>
+        <button class="nav-btn" data-view="worklog" onclick="navigate('worklog',this)"><span class="nav-ico">✦</span><span class="nav-text">AI Worklog</span></button>
+        <button class="nav-btn" data-view="library" onclick="navigate('library',this)"><span class="nav-ico">▤</span><span class="nav-text">Prompt Library</span></button>
+        <button class="nav-btn" data-view="analytics" onclick="navigate('analytics',this)"><span class="nav-ico">◩</span><span class="nav-text">Team Analytics</span></button>
+        <button class="nav-btn" data-view="impact" onclick="navigate('impact',this)"><span class="nav-ico">↗</span><span class="nav-text">Marketing Impact</span></button>
+      </nav>
+
+      <div class="side-label">Management</div>
+      <nav class="nav">
+        <button class="nav-btn" data-view="admin" onclick="navigate('admin',this)"><span class="nav-ico">⚙</span><span class="nav-text">Admin & Data</span></button>
+      </nav>
+
+      <div class="side-bottom">
+        <div class="connection-card">
+          <div class="connection-row"><i id="connDot" class="conn-dot"></i><span id="connLabel">Memeriksa koneksi</span></div>
+          <p id="connDetail">Menghubungi Google Apps Script...</p>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0">
+          <button class="btn icon-btn mobile-menu" onclick="toggleSidebar()">☰</button>
+          <div class="top-left">
+            <div id="topTitle" class="top-title">Overview</div>
+            <div id="topDate" class="top-date"></div>
+          </div>
+        </div>
+        <div class="top-actions">
+          <button class="btn icon-btn" title="Ganti tema" onclick="toggleTheme()">◐</button>
+          <div class="profile-chip">
+            <div id="userAvatar" class="avatar">DM</div>
+            <div>
+              <div id="userEmail" class="profile-name">—</div>
+              <div class="profile-role">Team Member</div>
+            </div>
+          </div>
+          <button class="btn icon-btn btn-danger" title="Keluar" onclick="logout()">↪</button>
+        </div>
+      </header>
+
+      <main class="content">
+        <!-- OVERVIEW -->
+        <section id="view-overview" class="view active">
+          <div class="hero card">
+            <div class="hero-copy">
+              <div class="hero-kicker">Fastpay Digital Marketing</div>
+              <h1 id="heroGreeting">Ubah penggunaan AI menjadi output yang berdampak.</h1>
+              <p>Jangan berhenti pada check-in. Dokumentasikan prompt, output, waktu yang dihemat, dan kontribusinya terhadap performa marketing.</p>
+              <div class="hero-actions">
+                <button class="btn btn-primary" onclick="navigate('worklog')">＋ Buat AI Worklog</button>
+                <button class="btn btn-ghost" onclick="navigate('library')">Lihat Prompt Library</button>
+              </div>
+            </div>
+            <div class="hero-orb">✦</div>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="card kpi"><div class="kpi-top"><div class="kpi-icon">◎</div><div id="kpiAdoptionTrend" class="kpi-trend">Hari ini</div></div><div id="kpiAdoption" class="kpi-value">—</div><div class="kpi-label">AI Adoption Rate</div><div id="kpiAdoptionNote" class="kpi-note">—</div></div>
+            <div class="card kpi"><div class="kpi-top"><div class="kpi-icon" style="background:rgba(32,201,139,.12)">✓</div><div class="kpi-trend">30 hari</div></div><div id="kpiUsed" class="kpi-value">—</div><div class="kpi-label">Output Digunakan</div><div class="kpi-note">Status Used / Standardized</div></div>
+            <div class="card kpi"><div class="kpi-top"><div class="kpi-icon" style="background:rgba(244,183,64,.12)">◷</div><div class="kpi-trend">Estimasi</div></div><div id="kpiSaved" class="kpi-value">—</div><div class="kpi-label">Jam Kerja Dihemat</div><div class="kpi-note">Berdasarkan worklog</div></div>
+            <div class="card kpi"><div class="kpi-top"><div class="kpi-icon" style="background:rgba(155,108,255,.12)">▤</div><div class="kpi-trend">Reusable</div></div><div id="kpiPrompts" class="kpi-value">—</div><div class="kpi-label">Prompt Siap Pakai</div><div class="kpi-note">Dibagikan ke tim</div></div>
+            <div class="card kpi"><div class="kpi-top"><div class="kpi-icon" style="background:rgba(239,43,58,.12)">↗</div><div class="kpi-trend">Measured</div></div><div id="kpiImpact" class="kpi-value">—</div><div class="kpi-label">Impact Terukur</div><div class="kpi-note">Memiliki KPI before-after</div></div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card card-pad">
+              <div class="card-head"><div><div class="card-title">Adopsi Hari Ini per Workstream</div><div class="card-sub">Persentase anggota yang sudah mencatat penggunaan AI</div></div><span class="badge badge-blue">Live</span></div>
+              <div id="adoptionChart" class="chart-list"></div>
+            </div>
+            <div class="card card-pad">
+              <div class="card-head"><div><div class="card-title">AI Impact Leaderboard</div><div class="card-sub">Skor berdasarkan kualitas dan dampak, bukan jumlah check-in saja</div></div><button class="btn" onclick="navigate('analytics')">Detail</button></div>
+              <div id="leaderboard" class="leader-list"></div>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="card card-pad" style="grid-column:span 2">
+              <div class="card-head"><div><div class="card-title">Aktivitas Terbaru</div><div class="card-sub">AI worklog terbaru dari seluruh tim</div></div><button class="btn" onclick="exportCSV()">↓ Export CSV</button></div>
+              <div class="table-wrap"><table><thead><tr><th>Member</th><th>Workstream</th><th>Campaign / Task</th><th>Status</th><th>Waktu Hemat</th><th>Waktu</th><th></th></tr></thead><tbody id="recentBody"></tbody></table></div>
+            </div>
+            <div class="card card-pad">
+              <div class="card-head"><div><div class="card-title">Belum Check-in Hari Ini</div><div id="missingSubtitle" class="card-sub">—</div></div><span id="missingCount" class="badge badge-red">0</span></div>
+              <div id="missingList" class="missing-wrap"></div>
+            </div>
+          </div>
+
+          <div class="card card-pad">
+            <div class="card-head"><div><div class="card-title">AI Management Insight</div><div id="analysisMeta" class="card-sub">Laporan terakhir dari backend</div></div><button class="btn" onclick="loadAnalysis(true)">↻ Refresh</button></div>
+            <div id="analysisBox" class="analysis-box"><div class="empty-state"><div class="empty-icon">✦</div>Memuat laporan analisis...</div></div>
+          </div>
+        </section>
+
+        <!-- WORKLOG -->
+        <section id="view-worklog" class="view">
+          <div class="view-head"><div><div class="section-title">Daily AI Worklog</div><div class="section-desc">Catat pekerjaan, prompt, output, efisiensi waktu, dan dampaknya.</div></div><span class="badge badge-amber">MVP Compatible</span></div>
+          <div class="worklog-layout">
+            <div class="card card-pad">
+              <form id="worklogForm" onsubmit="submitWorklog(event)">
+                <div class="form-section">
+                  <div class="form-section-title"><span>1</span> Identitas Pekerjaan</div>
+                  <div class="form-grid">
+                    <div><label for="fName">Nama Member</label><input id="fName" list="memberNames" autocomplete="off" placeholder="Pilih / ketik nama" oninput="autofillMember()"><datalist id="memberNames"></datalist></div>
+                    <div><label for="fWorkstream">Workstream</label><select id="fWorkstream"></select></div>
+                    <div><label for="fCampaign">Campaign / Project</label><input id="fCampaign" placeholder="Contoh: Akuisisi Agen Pulsa Juli"></div>
+                    <div><label for="fTask">Jenis Pekerjaan</label><select id="fTask"></select></div>
+                    <div><label for="fChannel">Channel</label><select id="fChannel"></select></div>
+                    <div><label for="fObjective">Objective</label><input id="fObjective" placeholder="Contoh: Meningkatkan CTR iklan"></div>
+                  </div>
+                </div>
+
+                <div class="form-section">
+                  <div class="form-section-title"><span>2</span> Penggunaan AI</div>
+                  <label>AI Tool yang Digunakan</label>
+                  <div id="toolPills" class="tool-pills"></div>
+                  <div style="margin-top:16px">
+                    <label for="fPrompt">Prompt Utama</label>
+                    <textarea id="fPrompt" rows="7" placeholder="Tuliskan prompt yang benar-benar digunakan, termasuk konteks dan format output yang diminta."></textarea>
+                    <div class="field-note">Jangan masukkan password, API key, nomor rekening, atau data pelanggan yang dapat diidentifikasi.</div>
+                  </div>
+                  <div class="form-grid" style="margin-top:15px">
+                    <div><label for="fDataClass">Klasifikasi Data</label><select id="fDataClass"><option>Publik</option><option selected>Internal</option><option>Rahasia</option><option>Mengandung Data Pelanggan</option></select></div>
+                    <div><label for="fShare">Bagikan ke Prompt Library?</label><select id="fShare"><option value="Yes">Ya, dapat digunakan tim</option><option value="No">Tidak, hanya worklog pribadi</option></select></div>
+                  </div>
+                  <div id="dataWarning" class="data-warning hidden" style="margin-top:14px">⚠ Prompt yang mengandung data pelanggan atau informasi rahasia tidak boleh masuk Prompt Library. Anonimkan data terlebih dahulu.</div>
+                </div>
+
+                <div class="form-section">
+                  <div class="form-section-title"><span>3</span> Output dan Status</div>
+                  <div class="form-grid">
+                    <div class="field-full"><label for="fOutput">Ringkasan Output</label><textarea id="fOutput" rows="4" placeholder="Jelaskan output yang dihasilkan dan bagaimana output tersebut digunakan."></textarea></div>
+                    <div><label for="fStatus">Status Output</label><select id="fStatus"><option value="Experiment">Eksperimen</option><option value="Revised">Direvisi</option><option value="Used" selected>Digunakan</option><option value="Standardized">Dijadikan Standar</option><option value="Rejected">Tidak Digunakan</option></select></div>
+                    <div><label for="fOutputLink">Link Output</label><input id="fOutputLink" type="url" placeholder="Google Docs / Sheets / Drive / Figma"></div>
+                    <div><label for="fQuality">Rating Kualitas Mandiri</label><select id="fQuality"><option value="1">1 — Perlu banyak revisi</option><option value="2">2 — Kurang</option><option value="3" selected>3 — Cukup</option><option value="4">4 — Baik</option><option value="5">5 — Sangat baik</option></select></div>
+                    <div><label for="fReview">Perlu Review Lead?</label><select id="fReview"><option value="No">Tidak</option><option value="Yes">Ya</option></select></div>
+                  </div>
+                </div>
+
+                <div class="form-section">
+                  <div class="form-section-title"><span>4</span> Efisiensi dan Marketing Impact</div>
+                  <div class="range-row">
+                    <div><label for="fBefore">Waktu Normal (menit)</label><input id="fBefore" type="number" min="0" step="5" placeholder="90" oninput="updateTimeSaved()"></div>
+                    <div><label for="fAfter">Waktu dengan AI (menit)</label><input id="fAfter" type="number" min="0" step="5" placeholder="30" oninput="updateTimeSaved()"></div>
+                    <div id="timeSavedBox" class="time-saved">Hemat 0 menit</div>
+                  </div>
+                  <div class="form-grid-3" style="margin-top:15px">
+                    <div><label for="fMetric">KPI / Metric</label><input id="fMetric" placeholder="CTR, CPA, NMAT, Retention"></div>
+                    <div><label for="fBaseline">Before / Baseline</label><input id="fBaseline" placeholder="1,20%"></div>
+                    <div><label for="fResult">After / Result</label><input id="fResult" placeholder="1,65%"></div>
+                  </div>
+                </div>
+
+                <button id="submitWorklogBtn" type="submit" class="btn btn-primary" style="width:100%;min-height:48px">Simpan AI Worklog</button>
+              </form>
+            </div>
+
+            <aside class="side-guide">
+              <div class="card card-pad" style="margin-bottom:15px">
+                <div class="card-title">Standar Worklog Berkualitas</div>
+                <div class="card-sub" style="margin-bottom:16px">Worklog yang baik harus dapat dipahami dan digunakan ulang.</div>
+                <div class="guide-list">
+                  <div class="guide-item"><div class="guide-num">1</div><div><b>Tulis konteks spesifik.</b><br><span class="muted">Sertakan target audience, objective, produk, dan batasan.</span></div></div>
+                  <div class="guide-item"><div class="guide-num">2</div><div><b>Catat output yang dipakai.</b><br><span class="muted">Bukan hanya respons AI, tetapi hasil kerja final.</span></div></div>
+                  <div class="guide-item"><div class="guide-num">3</div><div><b>Ukur efisiensi.</b><br><span class="muted">Bandingkan waktu kerja normal dengan bantuan AI.</span></div></div>
+                  <div class="guide-item"><div class="guide-num">4</div><div><b>Hubungkan dengan KPI.</b><br><span class="muted">Isi ketika output sudah masuk campaign atau proses operasional.</span></div></div>
+                </div>
+              </div>
+              <div class="card card-pad">
+                <div class="card-title">Data Privacy Guardrail</div>
+                <div class="card-sub" style="margin-bottom:14px">Dilarang memasukkan:</div>
+                <div class="guide-list">
+                  <div class="guide-item">• Password, token, API key, credential</div>
+                  <div class="guide-item">• Nomor rekening dan detail finansial individu</div>
+                  <div class="guide-item">• Nama, nomor telepon, atau ID pelanggan tanpa anonimisasi</div>
+                  <div class="guide-item">• Data bisnis rahasia ke AI publik tanpa izin</div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- LIBRARY -->
+        <section id="view-library" class="view">
+          <div class="view-head"><div><div class="section-title">Prompt Library</div><div class="section-desc">Prompt terstruktur yang dapat digunakan ulang oleh Digital Marketing Fastpay.</div></div><button class="btn btn-primary" onclick="navigate('worklog')">＋ Tambah dari Worklog</button></div>
+          <div class="toolbar">
+            <input id="librarySearch" class="search" placeholder="Cari prompt, campaign, creator..." oninput="renderLibrary()">
+            <select id="libraryWorkstream" style="max-width:220px" onchange="renderLibrary()"></select>
+            <select id="libraryTask" style="max-width:220px" onchange="renderLibrary()"><option value="all">Semua Use Case</option></select>
+          </div>
+          <div id="libraryGrid" class="library-grid"></div>
+        </section>
+
+        <!-- ANALYTICS -->
+        <section id="view-analytics" class="view">
+          <div class="view-head"><div><div class="section-title">Team Analytics</div><div class="section-desc">Pantau adopsi, produktivitas, kualitas output, dan AI Impact Score.</div></div><select id="analyticsPeriod" style="max-width:180px" onchange="renderAnalytics()"><option value="30">30 Hari Terakhir</option><option value="7">7 Hari Terakhir</option><option value="90">90 Hari Terakhir</option></select></div>
+          <div class="analytics-kpis">
+            <div class="card kpi"><div class="kpi-icon">◉</div><div id="aActive" class="kpi-value">—</div><div class="kpi-label">Active AI Users</div></div>
+            <div class="card kpi"><div class="kpi-icon" style="background:rgba(32,201,139,.12)">✓</div><div id="aUsedRate" class="kpi-value">—</div><div class="kpi-label">Output Usage Rate</div></div>
+            <div class="card kpi"><div class="kpi-icon" style="background:rgba(244,183,64,.12)">◷</div><div id="aAvgSaved" class="kpi-value">—</div><div class="kpi-label">Avg Time Saved / Worklog</div></div>
+            <div class="card kpi"><div class="kpi-icon" style="background:rgba(155,108,255,.12)">★</div><div id="aQuality" class="kpi-value">—</div><div class="kpi-label">Avg Quality Rating</div></div>
+          </div>
+          <div class="grid-2">
+            <div class="card card-pad"><div class="card-head"><div><div class="card-title">Produktivitas per Workstream</div><div class="card-sub">Worklog, output used, dan estimasi jam hemat</div></div></div><div id="workstreamTable" class="table-wrap"></div></div>
+            <div class="card card-pad"><div class="card-head"><div><div class="card-title">AI Impact Score per Member</div><div class="card-sub">Bobot: konsistensi, kelengkapan, usage, share, quality, impact</div></div></div><div id="memberScores" class="leader-list"></div></div>
+          </div>
+        </section>
+
+        <!-- IMPACT -->
+        <section id="view-impact" class="view">
+          <div class="view-head"><div><div class="section-title">Marketing Impact</div><div class="section-desc">Daftar output AI yang sudah memiliki indikasi dampak atau KPI before-after.</div></div><button class="btn" onclick="exportImpactCSV()">↓ Export Impact</button></div>
+          <div class="analytics-kpis">
+            <div class="card kpi"><div class="kpi-icon">↗</div><div id="iMeasured" class="kpi-value">—</div><div class="kpi-label">Worklog Terukur</div></div>
+            <div class="card kpi"><div class="kpi-icon" style="background:rgba(32,201,139,.12)">✓</div><div id="iPositive" class="kpi-value">—</div><div class="kpi-label">Positive Impact</div></div>
+            <div class="card kpi"><div class="kpi-icon" style="background:rgba(55,136,255,.12)">▣</div><div id="iCampaigns" class="kpi-value">—</div><div class="kpi-label">Campaign Terlibat</div></div>
+            <div class="card kpi"><div class="kpi-icon" style="background:rgba(244,183,64,.12)">◷</div><div id="iHours" class="kpi-value">—</div><div class="kpi-label">Jam Dihemat</div></div>
+          </div>
+          <div class="card card-pad"><div class="card-head"><div><div class="card-title">Impact Register</div><div class="card-sub">KPI yang perlu divalidasi setelah output masuk campaign</div></div></div><div class="table-wrap"><table><thead><tr><th>Campaign</th><th>Member</th><th>Workstream</th><th>KPI</th><th>Baseline</th><th>Result</th><th>Status</th><th></th></tr></thead><tbody id="impactBody"></tbody></table></div></div>
+        </section>
+
+        <!-- ADMIN -->
+        <section id="view-admin" class="view">
+          <div class="view-head"><div><div class="section-title">Admin & Data</div><div class="section-desc">Konfigurasi endpoint, daftar member, ekspor data, dan status kesehatan sistem.</div></div><span class="badge badge-red">Internal</span></div>
+          <div class="admin-grid">
+            <div class="card card-pad">
+              <div class="card-head"><div><div class="card-title">API Configuration</div><div class="card-sub">Endpoint Google Apps Script yang digunakan browser ini</div></div></div>
+              <label for="adminApi">Web App URL</label>
+              <input id="adminApi" type="url">
+              <div style="display:flex;gap:9px;margin-top:12px"><button class="btn" style="flex:1" onclick="testApiFromAdmin()">Test Connection</button><button class="btn btn-primary" style="flex:1" onclick="saveAdminApi()">Simpan</button></div>
+              <div id="apiTestResult" class="field-note"></div>
+            </div>
+            <div class="card card-pad">
+              <div class="card-head"><div><div class="card-title">Data Health</div><div class="card-sub">Ringkasan sinkronisasi dan kelengkapan data</div></div></div>
+              <div id="dataHealth"></div>
+              <div style="display:flex;gap:9px;margin-top:14px"><button class="btn" onclick="refreshAll()">↻ Refresh Data</button><button class="btn" onclick="exportCSV()">↓ Export Semua</button></div>
+            </div>
+            <div class="card card-pad">
+              <div class="card-head"><div><div class="card-title">Member Directory</div><div id="memberCount" class="card-sub">—</div></div></div>
+              <div id="memberList" class="member-list"></div>
+            </div>
+            <div class="card card-pad">
+              <div class="card-head"><div><div class="card-title">Migration Note</div><div class="card-sub">Status kompatibilitas dengan code.gs lama</div></div></div>
+              <div class="data-warning" style="color:#93c5fd;background:rgba(55,136,255,.08);border-color:rgba(55,136,255,.2)">Frontend ini menyimpan field baru dalam format terstruktur di kolom <b>Prompt</b> agar tetap berjalan dengan backend lama. Tahap berikutnya adalah memperbarui <code>code.gs</code> dan struktur Sheet supaya setiap field memiliki kolom sendiri.</div>
+              <div class="health-row"><span>Frontend version</span><strong>Fastpay AI Growth Hub v1.0</strong></div>
+              <div class="health-row"><span>Worklog format</span><strong>FASTPAY_AI_WORKLOG_V1</strong></div>
+              <div class="health-row"><span>Backend compatibility</span><strong style="color:#6ee7b7">Compatible</strong></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</section>
+
+<!-- DETAIL MODAL -->
+<div id="detailModal" class="modal-layer" onclick="closeModalOnBackdrop(event)">
+  <div class="modal">
+    <div class="modal-head"><div><div class="card-title">Detail AI Worklog</div><div id="modalSubtitle" class="card-sub"></div></div><button class="btn icon-btn" onclick="closeDetail()">×</button></div>
+    <div id="modalBody" class="modal-body"></div>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+
+<script src="config.js"></script>
+<script>
+'use strict';
+
+const DEFAULT_API_URL = (window.FASTPAY_CONFIG && window.FASTPAY_CONFIG.API_URL) || '';
+const STORAGE = {
+  api: 'fp_ai_api_url', user: 'fp_ai_user', token: 'fp_ai_token', theme: 'fp_ai_theme',
+  entries: 'fp_ai_entries_v1', members: 'fp_ai_members_v1', profile: 'fp_ai_last_profile'
+};
+const WORKSTREAMS = ['Performance Marketing','Content & Social Media','Creative & Design','KOL & Influencer','ASO & Play Store','CRM & Retention','Data & Analytics','Brand Activation','Leadership & Strategy'];
+const TASKS = ['Hook & Headline','Copywriting Ads','Script Video','Caption & Social Copy','Brief Design','Visual Prompt','Content Planning','Ads Analysis','Audience Hypothesis','Creative Testing','Budget Allocation','Funnel Analysis','Cohort Analysis','Forecast & Reporting','KOL Mapping','Brief Endorsement','ASO Keyword Research','Store Listing Copy','CRM Message','Retargeting Strategy','Quick Win & Action Plan','Meeting Summary','Research & Benchmark','Automation / Coding','Lainnya'];
+const CHANNELS = ['Meta Ads','Google Ads','TikTok Ads','TikTok Organic','Instagram','Facebook','YouTube','Google Play Store','WhatsApp / CRM','KOL / Influencer','Website / Landing Page','Internal Report','Multi-channel','Lainnya'];
+const AI_TOOLS = ['ChatGPT','Gemini','Claude','Copilot','Perplexity','Canva AI','Midjourney','Runway','Lainnya'];
+const STATUS_LABEL = {Experiment:'Eksperimen',Revised:'Direvisi',Used:'Digunakan',Standardized:'Standar',Rejected:'Tidak Digunakan',Legacy:'Legacy'};
+
+const state = {
+  entries: loadJSON(STORAGE.entries, []), members: loadJSON(STORAGE.members, []),
+  user: localStorage.getItem(STORAGE.user) || '', token: localStorage.getItem(STORAGE.token) || '',
+  selectedTools: [], analysis: null, online: false, currentView: 'overview'
+};
+
+function apiUrl(){ return localStorage.getItem(STORAGE.api) || DEFAULT_API_URL || ''; }
+function loadJSON(key, fallback){ try { const v=JSON.parse(localStorage.getItem(key)||'null'); return v ?? fallback; } catch { return fallback; } }
+function saveJSON(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
+function escapeHtml(value=''){ return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+function nl2br(value=''){ return escapeHtml(value).replace(/\n/g,'<br>'); }
+function initials(value=''){ const p=String(value).trim().split(/\s+/).filter(Boolean); return (p[0]?.[0]||'F')+(p[1]?.[0]||''); }
+function todayWIB(){ return new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Jakarta'}); }
+function nowWIB(){ return new Date().toLocaleTimeString('id-ID',{timeZone:'Asia/Jakarta',hour:'2-digit',minute:'2-digit',hour12:false}).replace('.',':'); }
+function dateLabel(){ return new Intl.DateTimeFormat('id-ID',{timeZone:'Asia/Jakarta',weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date()); }
+function monthKey(){ return todayWIB().slice(0,7); }
+function parseNumber(v){ if(v===null||v===undefined||v==='') return 0; const cleaned=String(v).replace(/[^0-9,.-]/g,'').replace(',','.'); const n=parseFloat(cleaned); return Number.isFinite(n)?n:0; }
+function formatHours(minutes){ const m=Math.max(0,Number(minutes)||0); if(m<60) return `${Math.round(m)}m`; const h=m/60; return `${h>=10?h.toFixed(0):h.toFixed(1)}h`; }
+function formatDateTime(e){ return `${e.date||'-'} ${e.time||''}`.trim(); }
+function statusBadge(status){ const map={Used:'badge-green',Standardized:'badge-purple',Rejected:'badge-red',Experiment:'badge-blue',Revised:'badge-amber',Legacy:''}; return `<span class="badge ${map[status]||''}">${escapeHtml(STATUS_LABEL[status]||status||'-')}</span>`; }
+
+function applyTheme(){ const t=localStorage.getItem(STORAGE.theme)||'dark'; document.documentElement.classList.toggle('light',t==='light'); }
+function toggleTheme(){ const light=document.documentElement.classList.contains('light'); localStorage.setItem(STORAGE.theme,light?'dark':'light'); applyTheme(); }
+applyTheme();
+
+function checkConfig(){
+  if(!apiUrl()){
+    document.getElementById('setupScreen').classList.remove('hidden');
+    document.getElementById('loginScreen').classList.add('hidden');
+    return false;
+  }
+  document.getElementById('setupScreen').classList.add('hidden');
+  return true;
+}
+function saveSetup(){
+  const url=document.getElementById('setupApi').value.trim();
+  if(!/^https:\/\/script\.google\.com\//.test(url)) return toast('Masukkan URL Google Apps Script yang valid.','error');
+  localStorage.setItem(STORAGE.api,url); location.reload();
+}
+
+async function apiFetch(params={}, options={}){
+  const url=new URL(apiUrl());
+  const action=String(params.action||'');
+  if(state.token && !['ping','login'].includes(action)) params.token=state.token;
+  Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
+  const res=await fetch(url.toString(),options);
+  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data=await res.json();
+  if(data && data.code==='UNAUTHORIZED'){
+    localStorage.removeItem(STORAGE.user); localStorage.removeItem(STORAGE.token);
+    state.user=''; state.token='';
+    throw new Error(data.message||'Sesi berakhir. Silakan login kembali.');
+  }
+  return data;
+}
+
+async function ping(){
+  const dot=document.getElementById('connDot'), label=document.getElementById('connLabel'), detail=document.getElementById('connDetail');
+  try {
+    const r=await apiFetch({action:'ping'});
+    if(!r.pong) throw new Error('Respons ping tidak valid');
+    state.online=true; dot.className='conn-dot online'; label.textContent='Server online'; detail.textContent='Google Apps Script terhubung';
+  } catch(err){
+    state.online=false; dot.className='conn-dot error'; label.textContent='Server offline'; detail.textContent=err.message;
+  }
+}
+
+async function login(){
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('loginPassword').value;
+  const btn=document.getElementById('loginBtn'), err=document.getElementById('loginError');
+  err.style.display='none';
+  if(!email||!pass){ err.textContent='Email dan password wajib diisi.'; err.style.display='block'; return; }
+  btn.disabled=true; btn.textContent='Memverifikasi...';
+  try {
+    const r=await apiFetch({action:'login',email,pass});
+    if(!r.valid) throw new Error(r.message||'Login gagal');
+    state.user=r.email||email; state.token=r.token||'';
+    localStorage.setItem(STORAGE.user,state.user); localStorage.setItem(STORAGE.token,state.token);
+    showApp(); await initApp();
+  } catch(ex){ err.textContent=ex.message; err.style.display='block'; }
+  finally { btn.disabled=false; btn.textContent='Masuk ke Growth Hub →'; }
+}
+function logout(){ localStorage.removeItem(STORAGE.user); localStorage.removeItem(STORAGE.token); state.user=''; state.token=''; location.reload(); }
+
+function showApp(){
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('setupScreen').classList.add('hidden');
+  document.getElementById('appScreen').style.display='block';
+  document.getElementById('userEmail').textContent=state.user;
+  document.getElementById('userAvatar').textContent=initials(state.user.split('@')[0].replace(/[._-]/g,' ')).toUpperCase();
+  document.getElementById('topDate').textContent=dateLabel();
+  document.getElementById('heroGreeting').textContent=`Halo, ${state.user.split('@')[0].replace(/[._-]/g,' ')}. Apa impact AI-mu hari ini?`;
+  document.getElementById('adminApi').value=apiUrl();
+}
+
+async function initApp(){
+  setupStaticOptions();
+  hydrateProfile();
+  renderAll();
+  ping();
+  const jobs=[loadMembers(),loadEntries(),loadAnalysis(false)];
+  await Promise.allSettled(jobs);
+  renderAll();
+}
+
+function setupStaticOptions(){
+  const ws=document.getElementById('fWorkstream');
+  ws.innerHTML='<option value="">Pilih workstream</option>'+WORKSTREAMS.map(x=>`<option>${escapeHtml(x)}</option>`).join('');
+  document.getElementById('fTask').innerHTML='<option value="">Pilih jenis pekerjaan</option>'+TASKS.map(x=>`<option>${escapeHtml(x)}</option>`).join('');
+  document.getElementById('fChannel').innerHTML='<option value="">Pilih channel</option>'+CHANNELS.map(x=>`<option>${escapeHtml(x)}</option>`).join('');
+  document.getElementById('toolPills').innerHTML=AI_TOOLS.map(x=>`<button type="button" class="tool-pill" data-tool="${escapeHtml(x)}" onclick="toggleTool(this)">${escapeHtml(x)}</button>`).join('');
+  document.getElementById('libraryWorkstream').innerHTML='<option value="all">Semua Workstream</option>'+WORKSTREAMS.map(x=>`<option>${escapeHtml(x)}</option>`).join('');
+  document.getElementById('libraryTask').innerHTML='<option value="all">Semua Use Case</option>'+TASKS.map(x=>`<option>${escapeHtml(x)}</option>`).join('');
+  document.getElementById('fDataClass').addEventListener('change',e=>{
+    const bad=['Rahasia','Mengandung Data Pelanggan'].includes(e.target.value);
+    document.getElementById('dataWarning').classList.toggle('hidden',!bad);
+    if(bad) document.getElementById('fShare').value='No';
+  });
+}
+
+async function loadMembers(){
+  try {
+    const r=await apiFetch({action:'getMembers'});
+    state.members=Array.isArray(r.members)?r.members.map(m=>({name:String(m.name||''),team:String(m.team||'')})):[];
+    saveJSON(STORAGE.members,state.members);
+    populateMembers();
+  } catch(err){ console.warn('Members:',err); populateMembers(); }
+}
+
+async function loadEntries(){
+  try {
+    const rows=await apiFetch({action:'getAll',days:'365'});
+    if(!Array.isArray(rows)) throw new Error(rows.message||'Data worklog tidak valid');
+    state.entries=rows.map(normalizeServerEntry).sort((a,b)=>`${b.date} ${b.time}`.localeCompare(`${a.date} ${a.time}`));
+    saveJSON(STORAGE.entries,state.entries);
+  } catch(err){ toast(`Menggunakan cache lokal: ${err.message}`,'warning'); }
+}
+
+async function loadAnalysis(showToast=false){
+  try {
+    const r=await apiFetch({action:'getLastAnalysis'});
+    state.analysis=r;
+    renderAnalysis();
+    if(showToast) toast('Laporan analisis diperbarui.');
+  } catch(err){
+    state.analysis={status:'error',text:`Analisis belum tersedia: ${err.message}`};
+    renderAnalysis();
+  }
+}
+
+function normalizeServerEntry(row){
+  const rawPrompt=String(row['Prompt']??row.prompt??'');
+  const parsed=parseWorklogPrompt(rawPrompt);
+  return {
+    id:String(row['ID']??row.id??''), date:normalizeDate(row['Tanggal']??row.date), time:String(row['Waktu']??row.time??''),
+    name:String(row['Nama']??row.name??''), team:String(row['Tim']??row.team??parsed.workstream??''),
+    tools:String(row['AI Tool']??row.tools??'').split(',').map(x=>x.trim()).filter(Boolean),
+    rawPrompt, prompt:parsed.prompt, useCase:String(row['Kategori']??row.useCase??parsed.task??'-'), streak:Number(row['Streak']??row.streak??1)||1,
+    by:String(row['Login Email']??row.by??''), meta:parsed, sync:'server'
+  };
+}
+function normalizeDate(v){
+  if(!v) return '';
+  if(/^\d{4}-\d{2}-\d{2}$/.test(String(v))) return String(v);
+  const d=new Date(v); if(Number.isNaN(d.getTime())) return String(v);
+  return d.toLocaleDateString('sv-SE',{timeZone:'Asia/Jakarta'});
+}
+
+function cleanMetaValue(value){ return String(value??'').replace(/\r?\n/g,' ↵ ').trim(); }
+function serializeWorklog(meta,prompt){
+  const fields=[
+    ['Campaign',meta.campaign],['Workstream',meta.workstream],['Task',meta.task],['Objective',meta.objective],['Channel',meta.channel],
+    ['Output',meta.output],['Status',meta.status],['Time Before',meta.before],['Time After',meta.after],['Impact Metric',meta.metric],
+    ['Baseline',meta.baseline],['Result',meta.result],['Output Link',meta.outputLink],['Share Prompt',meta.share],['Data Class',meta.dataClass],
+    ['Quality',meta.quality],['Review',meta.review]
+  ];
+  return ['[FASTPAY_AI_WORKLOG_V1]',...fields.map(([k,v])=>`${k}: ${cleanMetaValue(v)}`),'---PROMPT---',String(prompt||'').trim()].join('\n');
+}
+function parseWorklogPrompt(raw){
+  const fallback={version:'legacy',prompt:raw,campaign:'',workstream:'',task:'',objective:'',channel:'',output:'',status:'Legacy',before:0,after:0,metric:'',baseline:'',result:'',outputLink:'',share:'No',dataClass:'Internal',quality:0,review:'No'};
+  if(!raw.startsWith('[FASTPAY_AI_WORKLOG_V1]')) return fallback;
+  const parts=raw.split('\n---PROMPT---\n');
+  if(parts.length<2) return fallback;
+  const meta={...fallback,version:'v1',prompt:parts.slice(1).join('\n---PROMPT---\n')};
+  const map={'Campaign':'campaign','Workstream':'workstream','Task':'task','Objective':'objective','Channel':'channel','Output':'output','Status':'status','Time Before':'before','Time After':'after','Impact Metric':'metric','Baseline':'baseline','Result':'result','Output Link':'outputLink','Share Prompt':'share','Data Class':'dataClass','Quality':'quality','Review':'review'};
+  parts[0].split('\n').slice(1).forEach(line=>{
+    const i=line.indexOf(':'); if(i<0) return; const key=line.slice(0,i).trim(), val=line.slice(i+1).trim().replace(/ ↵ /g,'\n'); if(map[key]) meta[map[key]]=val;
+  });
+  meta.before=parseNumber(meta.before); meta.after=parseNumber(meta.after); meta.quality=parseNumber(meta.quality);
+  return meta;
+}
+
+function populateMembers(){
+  document.getElementById('memberNames').innerHTML=state.members.map(m=>`<option value="${escapeHtml(m.name)}">${escapeHtml(m.team)}</option>`).join('');
+}
+function hydrateProfile(){
+  const p=loadJSON(STORAGE.profile,{});
+  if(p.name) document.getElementById('fName').value=p.name;
+  if(p.workstream) document.getElementById('fWorkstream').value=p.workstream;
+}
+function autofillMember(){
+  const name=document.getElementById('fName').value.trim().toLowerCase();
+  const m=state.members.find(x=>x.name.trim().toLowerCase()===name);
+  if(m){
+    const ws=WORKSTREAMS.includes(m.team)?m.team:'';
+    if(ws) document.getElementById('fWorkstream').value=ws;
+  }
+}
+
+function navigate(view,btn=null){
+  state.currentView=view;
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${view}`));
+  document.querySelectorAll('.nav-btn').forEach(n=>n.classList.toggle('active',n.dataset.view===view));
+  const titles={overview:'Overview',worklog:'Daily AI Worklog',library:'Prompt Library',analytics:'Team Analytics',impact:'Marketing Impact',admin:'Admin & Data'};
+  document.getElementById('topTitle').textContent=titles[view]||'AI Growth Hub';
+  document.getElementById('sidebar').classList.remove('open');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(view==='library') renderLibrary(); if(view==='analytics') renderAnalytics(); if(view==='impact') renderImpact(); if(view==='admin') renderAdmin();
+}
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+function entriesWithin(days){ const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-Number(days)); const key=cutoff.toLocaleDateString('sv-SE',{timeZone:'Asia/Jakarta'}); return state.entries.filter(e=>e.date>=key); }
+function distinctBy(arr,keyFn){ return [...new Map(arr.map(x=>[keyFn(x),x])).values()]; }
+function timeSaved(e){ return Math.max(0,(Number(e.meta.before)||0)-(Number(e.meta.after)||0)); }
+function isUsed(e){ return ['Used','Standardized'].includes(e.meta.status); }
+function isShared(e){ return e.meta.share==='Yes' && !['Rahasia','Mengandung Data Pelanggan'].includes(e.meta.dataClass); }
+function hasImpact(e){ return Boolean(e.meta.metric && (e.meta.baseline || e.meta.result)); }
+
+function computeScores(entries=state.entries){
+  const names=[...new Set([...state.members.map(m=>m.name),...entries.map(e=>e.name)].filter(Boolean))];
+  const maxShare=Math.max(1,...names.map(n=>entries.filter(e=>e.name===n&&isShared(e)).length));
+  return names.map(name=>{
+    const es=entries.filter(e=>e.name===name), days=new Set(es.map(e=>e.date)).size;
+    const rich=es.filter(e=>e.meta.version==='v1').length;
+    const used=es.filter(isUsed).length, shared=es.filter(isShared).length;
+    const ratings=es.map(e=>Number(e.meta.quality)||0).filter(Boolean);
+    const impacts=es.filter(hasImpact).length;
+    const consistency=Math.min(15,(days/20)*15);
+    const completeness=es.length?(rich/es.length)*15:0;
+    const usage=es.length?(used/es.length)*25:0;
+    const share=(shared/maxShare)*15;
+    const quality=ratings.length?(ratings.reduce((a,b)=>a+b,0)/ratings.length/5)*10:0;
+    const impact=Math.min(20,(impacts/3)*20);
+    const score=Math.round(consistency+completeness+usage+share+quality+impact);
+    return {name,score,entries:es.length,used,shared,minutes:es.reduce((s,e)=>s+timeSaved(e),0),team:es[0]?.team||state.members.find(m=>m.name===name)?.team||'-'};
+  }).sort((a,b)=>b.score-a.score||b.entries-a.entries);
+}
+
+function renderAll(){
+  renderOverview(); renderLibrary(); renderAnalytics(); renderImpact(); renderAdmin(); populateMembers(); renderAnalysis();
+}
+
+function renderOverview(){
+  const last30=entriesWithin(30), td=todayWIB(), todayEntries=state.entries.filter(e=>e.date===td);
+  const checked=distinctBy(todayEntries,e=>(e.by||e.name).toLowerCase());
+  const total=state.members.length||new Set(last30.map(e=>e.name)).size||0;
+  const adoption=total?Math.min(100,Math.round(checked.length/total*100)):0;
+  const used=last30.filter(isUsed).length, saved=last30.reduce((s,e)=>s+timeSaved(e),0), prompts=last30.filter(isShared).length, impacts=last30.filter(hasImpact).length;
+  document.getElementById('kpiAdoption').textContent=`${adoption}%`;
+  document.getElementById('kpiAdoptionNote').textContent=`${checked.length} dari ${total} member`;
+  document.getElementById('kpiUsed').textContent=used.toLocaleString('id-ID');
+  document.getElementById('kpiSaved').textContent=formatHours(saved);
+  document.getElementById('kpiPrompts').textContent=prompts.toLocaleString('id-ID');
+  document.getElementById('kpiImpact').textContent=impacts.toLocaleString('id-ID');
+  renderAdoptionChart(todayEntries);
+  renderLeaderboard();
+  renderRecent();
+  renderMissing(todayEntries);
+}
+
+function renderAdoptionChart(todayEntries){
+  const teams=[...new Set([...WORKSTREAMS,...state.members.map(m=>m.team),...todayEntries.map(e=>e.team)].filter(Boolean))];
+  const rows=teams.map(team=>{
+    const total=state.members.filter(m=>m.team===team).length;
+    const done=distinctBy(todayEntries.filter(e=>e.team===team),e=>(e.by||e.name).toLowerCase()).length;
+    return {team,total:total||Math.max(done,1),done,pct:total?Math.round(done/total*100):(done?100:0)};
+  }).filter(x=>x.total>0||x.done>0).sort((a,b)=>b.pct-a.pct).slice(0,8);
+  const el=document.getElementById('adoptionChart');
+  el.innerHTML=rows.length?rows.map(r=>`<div class="chart-row"><div class="chart-name" title="${escapeHtml(r.team)}">${escapeHtml(r.team)}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.min(100,r.pct)}%"></div></div><div class="chart-value">${r.done}/${r.total}</div></div>`).join(''):'<div class="empty-state"><div class="empty-icon">◎</div>Belum ada data workstream.</div>';
+}
+
+function renderLeaderboard(){
+  const scores=computeScores(entriesWithin(30)).slice(0,5), el=document.getElementById('leaderboard');
+  el.innerHTML=scores.length?scores.map((x,i)=>`<div class="leader-row"><div class="rank ${i===0?'gold':''}">${i+1}</div><div><div class="leader-name">${escapeHtml(x.name)}</div><div class="leader-meta">${escapeHtml(x.team)} · ${x.used} output used · ${formatHours(x.minutes)} saved</div></div><div class="score">${x.score}</div></div>`).join(''):'<div class="empty-state">Belum ada data untuk leaderboard.</div>';
+}
+
+function renderRecent(){
+  const rows=state.entries.slice(0,10), body=document.getElementById('recentBody');
+  body.innerHTML=rows.length?rows.map(e=>`<tr><td><div class="cell-main">${escapeHtml(e.name)}</div><div class="cell-sub">${escapeHtml(e.by||'')}</div></td><td>${escapeHtml(e.team||'-')}</td><td><div class="cell-main">${escapeHtml(e.meta.campaign||e.useCase||'-')}</div><div class="cell-sub prompt-cell">${escapeHtml(e.meta.task||e.prompt||'-')}</div></td><td>${statusBadge(e.meta.status)}</td><td class="mono">${formatHours(timeSaved(e))}</td><td><div class="cell-main">${escapeHtml(e.date)}</div><div class="cell-sub">${escapeHtml(e.time)}</div></td><td><button class="mini-btn" onclick="openDetail('${escapeHtml(e.id)}')">›</button></td></tr>`).join(''):'<tr><td colspan="7"><div class="empty-state">Belum ada worklog.</div></td></tr>';
+}
+
+function renderMissing(todayEntries){
+  const checked=new Set(todayEntries.map(e=>e.name.toLowerCase().trim()));
+  const missing=state.members.filter(m=>!checked.has(m.name.toLowerCase().trim()));
+  document.getElementById('missingCount').textContent=missing.length;
+  document.getElementById('missingSubtitle').textContent=state.members.length?`${missing.length} dari ${state.members.length} member`:'Member directory belum terisi';
+  document.getElementById('missingList').innerHTML=missing.length?missing.map(m=>`<span class="missing-person" title="${escapeHtml(m.team)}">${escapeHtml(m.name)}</span>`).join(''):'<div class="empty-state" style="padding:18px 0">✅ Semua member sudah check-in.</div>';
+}
+
+function renderAnalysis(){
+  const box=document.getElementById('analysisBox'), meta=document.getElementById('analysisMeta'), a=state.analysis;
+  if(!a){ box.innerHTML='<div class="empty-state"><div class="empty-icon">✦</div>Belum ada laporan analisis.</div>'; return; }
+  meta.textContent=a.date?`Update ${a.date} ${a.time||''}`:'Laporan terakhir dari backend';
+  const text=String(a.text||'Belum ada laporan analisis.');
+  let html=escapeHtml(text).replace(/^## (.*)$/gm,'<h3>$1</h3>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  box.innerHTML=html;
+}
+
+function toggleTool(el){
+  const tool=el.dataset.tool, i=state.selectedTools.indexOf(tool);
+  if(i>=0) state.selectedTools.splice(i,1); else state.selectedTools.push(tool);
+  el.classList.toggle('active',i<0);
+}
+function updateTimeSaved(){
+  const before=parseNumber(document.getElementById('fBefore').value), after=parseNumber(document.getElementById('fAfter').value), saved=Math.max(0,before-after);
+  document.getElementById('timeSavedBox').textContent=`Hemat ${saved} menit`;
+}
+function calcStreak(name){
+  const dates=[...new Set(state.entries.filter(e=>e.name.toLowerCase()===name.toLowerCase()).map(e=>e.date))].sort().reverse();
+  let streak=1, cursor=new Date(`${todayWIB()}T00:00:00`);
+  for(let i=0;i<31;i++){
+    const key=cursor.toLocaleDateString('sv-SE',{timeZone:'Asia/Jakarta'});
+    if(dates.includes(key)){ if(i>0||dates.includes(todayWIB())) streak=i+1; }
+    else if(i===0){ cursor.setDate(cursor.getDate()-1); continue; }
+    else break;
+    cursor.setDate(cursor.getDate()-1);
+  }
+  return Math.max(1,streak);
+}
+
+async function submitWorklog(event){
+  event.preventDefault();
+  const name=document.getElementById('fName').value.trim(), workstream=document.getElementById('fWorkstream').value, prompt=document.getElementById('fPrompt').value.trim();
+  const task=document.getElementById('fTask').value, status=document.getElementById('fStatus').value, dataClass=document.getElementById('fDataClass').value;
+  if(!name||!workstream||!task||!prompt||!state.selectedTools.length) return toast('Lengkapi nama, workstream, jenis pekerjaan, AI tool, dan prompt.','error');
+  if(['Rahasia','Mengandung Data Pelanggan'].includes(dataClass) && document.getElementById('fShare').value==='Yes') return toast('Prompt rahasia atau data pelanggan tidak boleh dibagikan ke library.','error');
+  const meta={
+    campaign:document.getElementById('fCampaign').value.trim(), workstream, task,
+    objective:document.getElementById('fObjective').value.trim(), channel:document.getElementById('fChannel').value,
+    output:document.getElementById('fOutput').value.trim(), status,
+    before:parseNumber(document.getElementById('fBefore').value), after:parseNumber(document.getElementById('fAfter').value),
+    metric:document.getElementById('fMetric').value.trim(), baseline:document.getElementById('fBaseline').value.trim(), result:document.getElementById('fResult').value.trim(),
+    outputLink:document.getElementById('fOutputLink').value.trim(), share:document.getElementById('fShare').value, dataClass,
+    quality:document.getElementById('fQuality').value, review:document.getElementById('fReview').value
+  };
+  const rawPrompt=serializeWorklog(meta,prompt), id=String(Date.now());
+  const payload={id,date:todayWIB(),time:nowWIB(),name,team:workstream,tools:state.selectedTools,prompt:rawPrompt,useCase:task,streak:calcStreak(name),by:state.user};
+  const local={...payload,rawPrompt,prompt,meta:{...meta,version:'v1',prompt},sync:'pending'};
+  const btn=document.getElementById('submitWorklogBtn'); btn.disabled=true; btn.textContent='Menyimpan...';
+  state.entries.unshift(local); saveJSON(STORAGE.entries,state.entries); renderAll();
+  try {
+    const r=await fetch(apiUrl(),{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({token:state.token,data:payload})}).then(x=>x.json());
+    if(r && r.code==='UNAUTHORIZED') throw new Error(r.message||'Sesi berakhir. Silakan login kembali.');
+    if(r.status!=='ok') throw new Error(r.message||'Gagal menyimpan');
+    local.sync='server'; saveJSON(STORAGE.entries,state.entries);
+    saveJSON(STORAGE.profile,{name,workstream});
+    toast('AI Worklog berhasil disimpan ke Google Sheets.');
+    resetWorklog(); navigate('overview');
+  } catch(err){
+    local.sync='pending'; saveJSON(STORAGE.entries,state.entries);
+    toast(`Tersimpan lokal, tetapi sinkronisasi gagal: ${err.message}`,'warning');
+  } finally { btn.disabled=false; btn.textContent='Simpan AI Worklog'; }
+}
+function resetWorklog(){
+  const name=document.getElementById('fName').value, ws=document.getElementById('fWorkstream').value;
+  document.getElementById('worklogForm').reset(); document.getElementById('fName').value=name; document.getElementById('fWorkstream').value=ws;
+  state.selectedTools=[]; document.querySelectorAll('.tool-pill').forEach(x=>x.classList.remove('active')); updateTimeSaved();
+}
+
+function getLibraryEntries(){ return state.entries.filter(e=>e.meta.version==='v1'&&isShared(e)&&e.prompt); }
+function renderLibrary(){
+  const q=(document.getElementById('librarySearch')?.value||'').toLowerCase(), ws=document.getElementById('libraryWorkstream')?.value||'all', task=document.getElementById('libraryTask')?.value||'all';
+  const items=getLibraryEntries().filter(e=>(ws==='all'||e.team===ws)&&(task==='all'||e.meta.task===task)&&[e.prompt,e.meta.campaign,e.name,e.team,e.meta.task].join(' ').toLowerCase().includes(q));
+  const grid=document.getElementById('libraryGrid'); if(!grid) return;
+  grid.innerHTML=items.length?items.map(e=>`<article class="card prompt-card"><div class="prompt-card-head"><span class="badge badge-blue">${escapeHtml(e.meta.task||e.useCase)}</span>${e.meta.status==='Standardized'?'<span class="badge badge-purple">Best Practice</span>':''}</div><h3>${escapeHtml(e.meta.campaign||e.meta.objective||'Prompt Digital Marketing')}</h3><div class="prompt-preview">${escapeHtml(e.prompt)}</div><div class="prompt-tags"><span class="badge">${escapeHtml(e.team)}</span>${e.tools.slice(0,2).map(t=>`<span class="badge">${escapeHtml(t)}</span>`).join('')}</div><div class="prompt-card-foot"><div class="creator">Oleh <b>${escapeHtml(e.name)}</b><br>${escapeHtml(e.date)}</div><div class="row-actions"><button class="mini-btn" title="Detail" onclick="openDetail('${escapeHtml(e.id)}')">◎</button><button class="mini-btn" title="Copy prompt" onclick="copyPrompt('${escapeHtml(e.id)}')">⧉</button></div></div></article>`).join(''):'<div class="card empty-state" style="grid-column:1/-1"><div class="empty-icon">▤</div>Belum ada prompt yang memenuhi filter.</div>';
+}
+async function copyPrompt(id){
+  const e=state.entries.find(x=>String(x.id)===String(id)); if(!e) return;
+  try { await navigator.clipboard.writeText(e.prompt); toast('Prompt disalin ke clipboard.'); } catch { toast('Browser tidak mengizinkan akses clipboard.','error'); }
+}
+
+function renderAnalytics(){
+  const days=Number(document.getElementById('analyticsPeriod')?.value||30), data=entriesWithin(days);
+  const active=new Set(data.map(e=>e.name)).size, used=data.filter(isUsed).length, saved=data.reduce((s,e)=>s+timeSaved(e),0), ratings=data.map(e=>Number(e.meta.quality)||0).filter(Boolean);
+  document.getElementById('aActive').textContent=active;
+  document.getElementById('aUsedRate').textContent=data.length?`${Math.round(used/data.length*100)}%`:'0%';
+  document.getElementById('aAvgSaved').textContent=data.length?formatHours(saved/data.length):'0m';
+  document.getElementById('aQuality').textContent=ratings.length?(ratings.reduce((a,b)=>a+b,0)/ratings.length).toFixed(1):'0.0';
+  const grouped={}; data.forEach(e=>{ const k=e.team||'Unknown'; if(!grouped[k]) grouped[k]={worklogs:0,used:0,minutes:0,shared:0}; grouped[k].worklogs++; grouped[k].used+=isUsed(e)?1:0; grouped[k].minutes+=timeSaved(e); grouped[k].shared+=isShared(e)?1:0; });
+  document.getElementById('workstreamTable').innerHTML=`<table><thead><tr><th>Workstream</th><th>Worklog</th><th>Output Used</th><th>Prompt Shared</th><th>Time Saved</th></tr></thead><tbody>${Object.entries(grouped).sort((a,b)=>b[1].worklogs-a[1].worklogs).map(([k,v])=>`<tr><td class="cell-main">${escapeHtml(k)}</td><td>${v.worklogs}</td><td>${v.used}</td><td>${v.shared}</td><td class="mono">${formatHours(v.minutes)}</td></tr>`).join('')||'<tr><td colspan="5"><div class="empty-state">Belum ada data.</div></td></tr>'}</tbody></table>`;
+  const scores=computeScores(data).slice(0,10);
+  document.getElementById('memberScores').innerHTML=scores.length?scores.map((x,i)=>`<div class="leader-row"><div class="score-circle" style="--score:${x.score}"><span>${x.score}</span></div><div><div class="leader-name">${escapeHtml(x.name)}</div><div class="leader-meta">${escapeHtml(x.team)} · ${x.entries} worklog · ${x.shared} shared</div></div><div class="score">#${i+1}</div></div>`).join(''):'<div class="empty-state">Belum ada skor member.</div>';
+}
+
+function inferPositiveImpact(e){
+  const a=parseNumber(e.meta.baseline), b=parseNumber(e.meta.result); if(!a&&!b) return null;
+  const negativeMetrics=['CPA','CPC','CPM','COST','BOUNCE','WAKTU','TIME'];
+  const lowerIsBetter=negativeMetrics.some(x=>String(e.meta.metric).toUpperCase().includes(x));
+  return lowerIsBetter?b<a:b>a;
+}
+function renderImpact(){
+  const data=state.entries.filter(hasImpact), positive=data.filter(e=>inferPositiveImpact(e)===true).length, campaigns=new Set(data.map(e=>e.meta.campaign).filter(Boolean)).size, hours=data.reduce((s,e)=>s+timeSaved(e),0);
+  document.getElementById('iMeasured').textContent=data.length;
+  document.getElementById('iPositive').textContent=positive;
+  document.getElementById('iCampaigns').textContent=campaigns;
+  document.getElementById('iHours').textContent=formatHours(hours);
+  document.getElementById('impactBody').innerHTML=data.length?data.map(e=>`<tr><td><div class="cell-main">${escapeHtml(e.meta.campaign||'-')}</div><div class="cell-sub">${escapeHtml(e.meta.task||'')}</div></td><td>${escapeHtml(e.name)}</td><td>${escapeHtml(e.team)}</td><td class="cell-main">${escapeHtml(e.meta.metric)}</td><td>${escapeHtml(e.meta.baseline||'-')}</td><td>${escapeHtml(e.meta.result||'-')}</td><td>${inferPositiveImpact(e)===true?'<span class="badge badge-green">Positive</span>':inferPositiveImpact(e)===false?'<span class="badge badge-red">Negative</span>':'<span class="badge badge-amber">Review</span>'}</td><td><button class="mini-btn" onclick="openDetail('${escapeHtml(e.id)}')">›</button></td></tr>`).join(''):'<tr><td colspan="8"><div class="empty-state">Belum ada worklog dengan KPI before-after.</div></td></tr>';
+}
+
+function renderAdmin(){
+  const pending=state.entries.filter(e=>e.sync==='pending').length, rich=state.entries.filter(e=>e.meta.version==='v1').length, complete=state.entries.filter(e=>e.meta.version==='v1'&&e.meta.output&&e.meta.status).length;
+  document.getElementById('dataHealth').innerHTML=`<div class="health-row"><span>Server status</span><strong style="color:${state.online?'#6ee7b7':'#fda4af'}">${state.online?'Online':'Offline'}</strong></div><div class="health-row"><span>Total worklog</span><strong>${state.entries.length}</strong></div><div class="health-row"><span>Format baru</span><strong>${rich}</strong></div><div class="health-row"><span>Worklog lengkap</span><strong>${complete}</strong></div><div class="health-row"><span>Pending sync lokal</span><strong style="color:${pending?'#fcd34d':'#6ee7b7'}">${pending}</strong></div>`;
+  document.getElementById('memberCount').textContent=`${state.members.length} anggota terdaftar`;
+  document.getElementById('memberList').innerHTML=state.members.length?state.members.map(m=>`<div class="member-row"><div class="member-info"><div class="avatar">${escapeHtml(initials(m.name).toUpperCase())}</div><div><div class="member-name">${escapeHtml(m.name)}</div><div class="member-team">${escapeHtml(m.team)}</div></div></div><span class="badge badge-green">Active</span></div>`).join(''):'<div class="empty-state">Member belum tersedia dari backend.</div>';
+}
+
+function openDetail(id){
+  const e=state.entries.find(x=>String(x.id)===String(id)); if(!e) return toast('Worklog tidak ditemukan.','error');
+  document.getElementById('modalSubtitle').textContent=`${e.name} · ${formatDateTime(e)}`;
+  const m=e.meta;
+  const items=[['Workstream',e.team],['Campaign',m.campaign||'-'],['Task',m.task||e.useCase],['Channel',m.channel||'-'],['Objective',m.objective||'-'],['Status',STATUS_LABEL[m.status]||m.status],['AI Tools',e.tools.join(', ')||'-'],['Data Class',m.dataClass||'-'],['Time Before',`${m.before||0} menit`],['Time After',`${m.after||0} menit`],['Time Saved',`${timeSaved(e)} menit`],['Quality',m.quality?`${m.quality}/5`:'-'],['Metric',m.metric||'-'],['Baseline',m.baseline||'-'],['Result',m.result||'-'],['Prompt',e.prompt||'-'],['Output',m.output||'-'],['Output Link',m.outputLink||'-']];
+  document.getElementById('modalBody').innerHTML=`<div class="detail-grid">${items.map(([k,v],i)=>`<div class="detail-item ${i>=15?'detail-full':''}"><div class="detail-label">${escapeHtml(k)}</div><div class="detail-value">${k==='Output Link'&&/^https?:\/\//.test(v)?`<a href="${escapeHtml(v)}" target="_blank" rel="noopener">${escapeHtml(v)}</a>`:nl2br(v)}</div></div>`).join('')}</div><div style="display:flex;gap:9px;margin-top:16px"><button class="btn" onclick="copyPrompt('${escapeHtml(e.id)}')">⧉ Copy Prompt</button>${m.outputLink?`<a class="btn btn-primary" href="${escapeHtml(m.outputLink)}" target="_blank" rel="noopener">Buka Output ↗</a>`:''}</div>`;
+  document.getElementById('detailModal').classList.add('show');
+}
+function closeDetail(){ document.getElementById('detailModal').classList.remove('show'); }
+function closeModalOnBackdrop(e){ if(e.target.id==='detailModal') closeDetail(); }
+
+function csvEscape(v){ const s=String(v??''); return `"${s.replace(/"/g,'""')}"`; }
+function downloadCSV(name,rows){
+  const csv='\uFEFF'+rows.map(r=>r.map(csvEscape).join(',')).join('\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function exportCSV(){
+  const header=['Tanggal','Waktu','Nama','Email','Workstream','Campaign','Task','Channel','AI Tools','Prompt','Output','Status','Time Before','Time After','Time Saved','Metric','Baseline','Result','Output Link','Share','Data Class','Quality'];
+  const rows=state.entries.map(e=>[e.date,e.time,e.name,e.by,e.team,e.meta.campaign,e.meta.task||e.useCase,e.meta.channel,e.tools.join('; '),e.prompt,e.meta.output,e.meta.status,e.meta.before,e.meta.after,timeSaved(e),e.meta.metric,e.meta.baseline,e.meta.result,e.meta.outputLink,e.meta.share,e.meta.dataClass,e.meta.quality]);
+  downloadCSV(`fastpay-ai-worklog-${todayWIB()}.csv`,[header,...rows]);
+}
+function exportImpactCSV(){
+  const data=state.entries.filter(hasImpact); downloadCSV(`fastpay-ai-impact-${todayWIB()}.csv`,[['Campaign','Member','Workstream','Task','Metric','Baseline','Result','Time Saved','Output Link'],...data.map(e=>[e.meta.campaign,e.name,e.team,e.meta.task,e.meta.metric,e.meta.baseline,e.meta.result,timeSaved(e),e.meta.outputLink])]);
+}
+
+async function testApiFromAdmin(){
+  const out=document.getElementById('apiTestResult'), url=document.getElementById('adminApi').value.trim(); out.textContent='Menguji koneksi...';
+  try { const u=new URL(url); u.searchParams.set('action','ping'); const r=await fetch(u).then(x=>x.json()); if(!r.pong) throw new Error('Pong tidak diterima'); out.textContent='✅ Koneksi berhasil.'; out.style.color='#6ee7b7'; }
+  catch(err){ out.textContent=`❌ ${err.message}`; out.style.color='#fda4af'; }
+}
+function saveAdminApi(){
+  const url=document.getElementById('adminApi').value.trim(); if(!/^https:\/\/script\.google\.com\//.test(url)) return toast('URL Apps Script tidak valid.','error');
+  localStorage.setItem(STORAGE.api,url); toast('Endpoint API disimpan. Halaman akan dimuat ulang.'); setTimeout(()=>location.reload(),700);
+}
+async function refreshAll(){ await Promise.allSettled([ping(),loadMembers(),loadEntries(),loadAnalysis(false)]); renderAll(); toast('Data diperbarui.'); }
+
+let toastTimer;
+function toast(message,type='success'){
+  const el=document.getElementById('toast'); el.textContent=message;
+  el.style.borderColor=type==='error'?'rgba(239,43,58,.4)':type==='warning'?'rgba(244,183,64,.4)':'rgba(32,201,139,.35)';
+  el.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),3800);
+}
+
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeDetail(); document.getElementById('sidebar')?.classList.remove('open'); } });
+document.getElementById('loginPassword').addEventListener('keydown',e=>{ if(e.key==='Enter') login(); });
+
+(function boot(){
+  if(!checkConfig()) return;
+  if(state.user){ showApp(); initApp(); }
+})();
+</script>
+</body>
+</html>
