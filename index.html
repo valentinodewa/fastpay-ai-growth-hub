@@ -590,13 +590,13 @@ tbody tr:hover { background:color-mix(in srgb,var(--surface-2) 70%, transparent)
         <button class="nav-btn active" data-view="overview" onclick="navigate('overview',this)"><span class="nav-ico">◫</span><span class="nav-text">Overview</span></button>
         <button class="nav-btn" data-view="worklog" onclick="navigate('worklog',this)"><span class="nav-ico">✦</span><span class="nav-text">AI Worklog</span></button>
         <button class="nav-btn" data-view="library" onclick="navigate('library',this)"><span class="nav-ico">▤</span><span class="nav-text">Prompt Library</span></button>
-        <button class="nav-btn" data-view="analytics" onclick="navigate('analytics',this)"><span class="nav-ico">◩</span><span class="nav-text">Team Analytics</span></button>
+        <button class="nav-btn" data-view="analytics" data-role-access="manager" onclick="navigate('analytics',this)"><span class="nav-ico">◩</span><span class="nav-text">Team Analytics</span></button>
         <button class="nav-btn" data-view="impact" onclick="navigate('impact',this)"><span class="nav-ico">↗</span><span class="nav-text">Marketing Impact</span></button>
       </nav>
 
-      <div class="side-label">Management</div>
+      <div id="managementLabel" class="side-label" data-role-access="manager">Management</div>
       <nav class="nav">
-        <button class="nav-btn" data-view="admin" onclick="navigate('admin',this)"><span class="nav-ico">⚙</span><span class="nav-text">Admin & Data</span></button>
+        <button class="nav-btn" data-view="admin" data-role-access="manager" onclick="navigate('admin',this)"><span class="nav-ico">⚙</span><span class="nav-text">Admin & Data</span></button>
       </nav>
 
       <div class="side-bottom">
@@ -622,7 +622,7 @@ tbody tr:hover { background:color-mix(in srgb,var(--surface-2) 70%, transparent)
             <div id="userAvatar" class="avatar">DM</div>
             <div>
               <div id="userEmail" class="profile-name">—</div>
-              <div class="profile-role">Team Member</div>
+              <div id="userRole" class="profile-role">Team Member</div>
             </div>
           </div>
           <button class="btn icon-btn btn-danger" title="Keluar" onclick="logout()">↪</button>
@@ -653,7 +653,7 @@ tbody tr:hover { background:color-mix(in srgb,var(--surface-2) 70%, transparent)
             <div class="card kpi"><div class="kpi-top"><div class="kpi-icon" style="background:rgba(239,43,58,.12)">↗</div><div class="kpi-trend">Measured</div></div><div id="kpiImpact" class="kpi-value">—</div><div class="kpi-label">Impact Terukur</div><div class="kpi-note">Memiliki KPI before-after</div></div>
           </div>
 
-          <div class="grid-2">
+          <div id="managerOverviewGrid" class="grid-2" data-role-access="manager">
             <div class="card card-pad">
               <div class="card-head"><div><div class="card-title">Adopsi Hari Ini per Workstream</div><div class="card-sub">Persentase anggota yang sudah mencatat penggunaan AI</div></div><span class="badge badge-blue">Live</span></div>
               <div id="adoptionChart" class="chart-list"></div>
@@ -665,17 +665,17 @@ tbody tr:hover { background:color-mix(in srgb,var(--surface-2) 70%, transparent)
           </div>
 
           <div class="grid-3">
-            <div class="card card-pad" style="grid-column:span 2">
-              <div class="card-head"><div><div class="card-title">Aktivitas Terbaru</div><div class="card-sub">AI worklog terbaru dari seluruh tim</div></div><button class="btn" onclick="exportCSV()">↓ Export CSV</button></div>
+            <div id="recentActivityCard" class="card card-pad" style="grid-column:span 2">
+              <div class="card-head"><div><div id="recentActivityTitle" class="card-title">Aktivitas Terbaru</div><div id="recentActivitySubtitle" class="card-sub">AI worklog terbaru dari seluruh tim</div></div><button id="overviewExportBtn" class="btn" onclick="exportCSV()">↓ Export CSV</button></div>
               <div class="table-wrap"><table><thead><tr><th>Member</th><th>Workstream</th><th>Campaign / Task</th><th>Status</th><th>Waktu Hemat</th><th>Waktu</th><th></th></tr></thead><tbody id="recentBody"></tbody></table></div>
             </div>
-            <div class="card card-pad">
+            <div id="missingCard" class="card card-pad" data-role-access="manager">
               <div class="card-head"><div><div class="card-title">Belum Check-in Hari Ini</div><div id="missingSubtitle" class="card-sub">—</div></div><span id="missingCount" class="badge badge-red">0</span></div>
               <div id="missingList" class="missing-wrap"></div>
             </div>
           </div>
 
-          <div class="card card-pad">
+          <div id="managementInsightCard" class="card card-pad" data-role-access="manager">
             <div class="card-head"><div><div class="card-title">AI Management Insight</div><div id="analysisMeta" class="card-sub">Laporan terakhir dari backend</div></div><button class="btn" onclick="loadAnalysis(true)">↻ Refresh</button></div>
             <div id="analysisBox" class="analysis-box"><div class="empty-state"><div class="empty-icon">✦</div>Memuat laporan analisis...</div></div>
           </div>
@@ -829,8 +829,8 @@ tbody tr:hover { background:color-mix(in srgb,var(--surface-2) 70%, transparent)
             </div>
             <div class="card card-pad">
               <div class="card-head"><div><div class="card-title">Migration Note</div><div class="card-sub">Status kompatibilitas dengan code.gs lama</div></div></div>
-              <div class="data-warning" style="color:#93c5fd;background:rgba(55,136,255,.08);border-color:rgba(55,136,255,.2)">Frontend ini menyimpan field baru dalam format terstruktur di kolom <b>Prompt</b> agar tetap berjalan dengan backend lama. Tahap berikutnya adalah memperbarui <code>code.gs</code> dan struktur Sheet supaya setiap field memiliki kolom sendiri.</div>
-              <div class="health-row"><span>Frontend version</span><strong>Fastpay AI Growth Hub v1.0</strong></div>
+              <div class="data-warning" style="color:#93c5fd;background:rgba(55,136,255,.08);border-color:rgba(55,136,255,.2)">Akses tampilan berbasis role sudah aktif. Manager dan Admin dapat membuka seluruh fitur; Staff hanya dapat membuka Overview personal, AI Worklog, Prompt Library, dan Marketing Impact personal.</div>
+              <div class="health-row"><span>Frontend version</span><strong>Fastpay AI Growth Hub v1.1 RBAC</strong></div>
               <div class="health-row"><span>Worklog format</span><strong>FASTPAY_AI_WORKLOG_V1</strong></div>
               <div class="health-row"><span>Backend compatibility</span><strong style="color:#6ee7b7">Compatible</strong></div>
             </div>
@@ -857,7 +857,7 @@ tbody tr:hover { background:color-mix(in srgb,var(--surface-2) 70%, transparent)
 const DEFAULT_API_URL = (window.FASTPAY_CONFIG && window.FASTPAY_CONFIG.API_URL) || '';
 const STORAGE = {
   api: 'fp_ai_api_url', user: 'fp_ai_user', token: 'fp_ai_token', theme: 'fp_ai_theme',
-  entries: 'fp_ai_entries_v1', members: 'fp_ai_members_v1', profile: 'fp_ai_last_profile'
+  entries: 'fp_ai_entries_v1', members: 'fp_ai_members_v1', profile: 'fp_ai_last_profile', auth: 'fp_ai_auth_profile'
 };
 const WORKSTREAMS = ['Performance Marketing','Content & Social Media','Creative & Design','KOL & Influencer','ASO & Play Store','CRM & Retention','Data & Analytics','Brand Activation','Leadership & Strategy'];
 const TASKS = ['Hook & Headline','Copywriting Ads','Script Video','Caption & Social Copy','Brief Design','Visual Prompt','Content Planning','Ads Analysis','Audience Hypothesis','Creative Testing','Budget Allocation','Funnel Analysis','Cohort Analysis','Forecast & Reporting','KOL Mapping','Brief Endorsement','ASO Keyword Research','Store Listing Copy','CRM Message','Retargeting Strategy','Quick Win & Action Plan','Meeting Summary','Research & Benchmark','Automation / Coding','Lainnya'];
@@ -868,8 +868,69 @@ const STATUS_LABEL = {Experiment:'Eksperimen',Revised:'Direvisi',Used:'Digunakan
 const state = {
   entries: loadJSON(STORAGE.entries, []), members: loadJSON(STORAGE.members, []),
   user: localStorage.getItem(STORAGE.user) || '', token: localStorage.getItem(STORAGE.token) || '',
-  selectedTools: [], analysis: null, online: false, currentView: 'overview'
+  selectedTools: [], analysis: null, online: false, currentView: 'overview',
+  profile: loadJSON(STORAGE.auth, {email:localStorage.getItem(STORAGE.user)||'',name:'',team:'',role:'Member'})
 };
+
+const ROLE_ACCESS = Object.freeze({
+  Member: ['overview','worklog','library','impact'],
+  Manager: ['overview','worklog','library','analytics','impact','admin'],
+  Admin: ['overview','worklog','library','analytics','impact','admin'],
+  Viewer: ['overview','library','impact']
+});
+function normalizeRole(role='Member'){
+  const value=String(role||'Member').trim().toLowerCase();
+  if(['admin','administrator'].includes(value)) return 'Admin';
+  if(['manager','lead','leader','supervisor'].includes(value)) return 'Manager';
+  if(['viewer','read only','readonly'].includes(value)) return 'Viewer';
+  return 'Member';
+}
+function currentRole(){ return normalizeRole(state.profile?.role||'Member'); }
+function isManagerRole(){ return ['Manager','Admin'].includes(currentRole()); }
+function canAccess(view){ return (ROLE_ACCESS[currentRole()]||ROLE_ACCESS.Member).includes(view); }
+function entryBelongsToUser(entry){
+  const email=String(state.user||state.profile?.email||'').toLowerCase().trim();
+  const name=String(state.profile?.name||'').toLowerCase().trim();
+  return Boolean((email&&String(entry.by||'').toLowerCase().trim()===email)||(name&&String(entry.name||'').toLowerCase().trim()===name));
+}
+function ownEntries(entries=state.entries){ return entries.filter(entryBelongsToUser); }
+function visibleEntries(entries=state.entries){ return isManagerRole()?entries:ownEntries(entries); }
+function resolveProfileFromMembers(){
+  const email=String(state.user||state.profile?.email||'').toLowerCase().trim();
+  const member=state.members.find(m=>String(m.email||'').toLowerCase().trim()===email);
+  if(member){
+    state.profile={email,name:member.name||'',team:member.team||'',role:normalizeRole(member.role)};
+    saveJSON(STORAGE.auth,state.profile);
+  } else {
+    state.profile={...state.profile,email,role:normalizeRole(state.profile?.role)};
+  }
+  return state.profile;
+}
+function roleLabel(role=currentRole()){
+  return role==='Admin'?'Administrator':role==='Manager'?'Manager':role==='Viewer'?'Viewer':'Staff';
+}
+function setKpiCard(valueId,value,label,note,trend){
+  const valueEl=document.getElementById(valueId); if(!valueEl) return;
+  valueEl.textContent=value;
+  const card=valueEl.closest('.kpi');
+  if(card){
+    const labelEl=card.querySelector('.kpi-label'), noteEl=card.querySelector('.kpi-note'), trendEl=card.querySelector('.kpi-trend');
+    if(labelEl&&label!==undefined) labelEl.textContent=label;
+    if(noteEl&&note!==undefined) noteEl.textContent=note;
+    if(trendEl&&trend!==undefined) trendEl.textContent=trend;
+  }
+}
+function applyRoleAccess(){
+  const manager=isManagerRole();
+  document.querySelectorAll('[data-role-access="manager"]').forEach(el=>el.classList.toggle('hidden',!manager));
+  const recent=document.getElementById('recentActivityCard');
+  if(recent) recent.style.gridColumn=manager?'span 2':'1 / -1';
+  const roleEl=document.getElementById('userRole'); if(roleEl) roleEl.textContent=roleLabel();
+  const title=document.getElementById('recentActivityTitle'); if(title) title.textContent=manager?'Aktivitas Terbaru':'Aktivitas Saya';
+  const subtitle=document.getElementById('recentActivitySubtitle'); if(subtitle) subtitle.textContent=manager?'AI worklog terbaru dari seluruh tim':'Riwayat AI worklog pribadi Anda';
+  const exportBtn=document.getElementById('overviewExportBtn'); if(exportBtn) exportBtn.textContent=manager?'↓ Export CSV':'↓ Export Data Saya';
+  if(!canAccess(state.currentView)) navigate('overview');
+}
 
 function apiUrl(){ return localStorage.getItem(STORAGE.api) || DEFAULT_API_URL || ''; }
 function loadJSON(key, fallback){ try { const v=JSON.parse(localStorage.getItem(key)||'null'); return v ?? fallback; } catch { return fallback; } }
@@ -943,31 +1004,41 @@ async function login(){
     const r=await apiFetch({action:'login',email,pass});
     if(!r.valid) throw new Error(r.message||'Login gagal');
     state.user=r.email||email; state.token=r.token||'';
-    localStorage.setItem(STORAGE.user,state.user); localStorage.setItem(STORAGE.token,state.token);
+    state.profile={email:state.user,name:r.name||'',team:r.team||'',role:normalizeRole(r.role||'Member')};
+    localStorage.setItem(STORAGE.user,state.user); localStorage.setItem(STORAGE.token,state.token); saveJSON(STORAGE.auth,state.profile);
     showApp(); await initApp();
   } catch(ex){ err.textContent=ex.message; err.style.display='block'; }
   finally { btn.disabled=false; btn.textContent='Masuk ke Growth Hub →'; }
 }
-function logout(){ localStorage.removeItem(STORAGE.user); localStorage.removeItem(STORAGE.token); state.user=''; state.token=''; location.reload(); }
+function logout(){ localStorage.removeItem(STORAGE.user); localStorage.removeItem(STORAGE.token); localStorage.removeItem(STORAGE.auth); state.user=''; state.token=''; state.profile={email:'',name:'',team:'',role:'Member'}; location.reload(); }
 
 function showApp(){
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('setupScreen').classList.add('hidden');
   document.getElementById('appScreen').style.display='block';
-  document.getElementById('userEmail').textContent=state.user;
-  document.getElementById('userAvatar').textContent=initials(state.user.split('@')[0].replace(/[._-]/g,' ')).toUpperCase();
+  const displayName=state.profile?.name||state.user.split('@')[0].replace(/[._-]/g,' ');
+  document.getElementById('userEmail').textContent=displayName;
+  document.getElementById('userAvatar').textContent=initials(displayName).toUpperCase();
+  document.getElementById('userRole').textContent=roleLabel();
   document.getElementById('topDate').textContent=dateLabel();
-  document.getElementById('heroGreeting').textContent=`Halo, ${state.user.split('@')[0].replace(/[._-]/g,' ')}. Apa impact AI-mu hari ini?`;
+  document.getElementById('heroGreeting').textContent=isManagerRole()?`Halo, ${displayName}. Pantau impact AI tim hari ini.`:`Halo, ${displayName}. Apa impact AI-mu hari ini?`;
   document.getElementById('adminApi').value=apiUrl();
+  applyRoleAccess();
 }
 
 async function initApp(){
   setupStaticOptions();
+  resolveProfileFromMembers();
   hydrateProfile();
+  applyRoleAccess();
   renderAll();
   ping();
-  const jobs=[loadMembers(),loadEntries(),loadAnalysis(false)];
+  const jobs=[loadMembers(),loadEntries()];
+  if(isManagerRole()) jobs.push(loadAnalysis(false));
   await Promise.allSettled(jobs);
+  resolveProfileFromMembers();
+  hydrateProfile();
+  applyRoleAccess();
   renderAll();
 }
 
@@ -989,9 +1060,11 @@ function setupStaticOptions(){
 async function loadMembers(){
   try {
     const r=await apiFetch({action:'getMembers'});
-    state.members=Array.isArray(r.members)?r.members.map(m=>({name:String(m.name||''),team:String(m.team||'')})):[];
+    state.members=Array.isArray(r.members)?r.members.map(m=>({email:String(m.email||'').toLowerCase().trim(),name:String(m.name||''),team:String(m.team||''),role:normalizeRole(m.role||'Member')})):[];
     saveJSON(STORAGE.members,state.members);
+    resolveProfileFromMembers();
     populateMembers();
+    applyRoleAccess();
   } catch(err){ console.warn('Members:',err); populateMembers(); }
 }
 
@@ -1062,9 +1135,16 @@ function populateMembers(){
   document.getElementById('memberNames').innerHTML=state.members.map(m=>`<option value="${escapeHtml(m.name)}">${escapeHtml(m.team)}</option>`).join('');
 }
 function hydrateProfile(){
-  const p=loadJSON(STORAGE.profile,{});
-  if(p.name) document.getElementById('fName').value=p.name;
-  if(p.workstream) document.getElementById('fWorkstream').value=p.workstream;
+  const saved=loadJSON(STORAGE.profile,{}), auth=state.profile||{};
+  const name=auth.name||saved.name||'', workstream=auth.team||saved.workstream||'';
+  const nameEl=document.getElementById('fName'), wsEl=document.getElementById('fWorkstream');
+  if(name) nameEl.value=name;
+  if(workstream&&WORKSTREAMS.includes(workstream)) wsEl.value=workstream;
+  const locked=Boolean(auth.name&&auth.team);
+  nameEl.readOnly=locked;
+  wsEl.disabled=locked;
+  nameEl.title=locked?'Identitas mengikuti akun login':'';
+  wsEl.title=locked?'Workstream mengikuti akun login':'';
 }
 function autofillMember(){
   const name=document.getElementById('fName').value.trim().toLowerCase();
@@ -1076,6 +1156,10 @@ function autofillMember(){
 }
 
 function navigate(view,btn=null){
+  if(!canAccess(view)){
+    toast('Fitur ini hanya tersedia untuk Manager atau Admin.','warning');
+    view='overview';
+  }
   state.currentView=view;
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${view}`));
   document.querySelectorAll('.nav-btn').forEach(n=>n.classList.toggle('active',n.dataset.view===view));
@@ -1119,23 +1203,33 @@ function renderAll(){
 }
 
 function renderOverview(){
-  const last30=entriesWithin(30), td=todayWIB(), todayEntries=state.entries.filter(e=>e.date===td);
-  const checked=distinctBy(todayEntries,e=>(e.by||e.name).toLowerCase());
-  const total=state.members.length||new Set(last30.map(e=>e.name)).size||0;
-  const adoption=total?Math.min(100,Math.round(checked.length/total*100)):0;
-  const used=last30.filter(isUsed).length, saved=last30.reduce((s,e)=>s+timeSaved(e),0), prompts=last30.filter(isShared).length, impacts=last30.filter(hasImpact).length;
-  document.getElementById('kpiAdoption').textContent=`${adoption}%`;
-  document.getElementById('kpiAdoptionNote').textContent=`${checked.length} dari ${total} member`;
-  document.getElementById('kpiUsed').textContent=used.toLocaleString('id-ID');
-  document.getElementById('kpiSaved').textContent=formatHours(saved);
-  document.getElementById('kpiPrompts').textContent=prompts.toLocaleString('id-ID');
-  document.getElementById('kpiImpact').textContent=impacts.toLocaleString('id-ID');
-  renderAdoptionChart(todayEntries);
-  renderLeaderboard();
+  const manager=isManagerRole(), source=visibleEntries(), td=todayWIB();
+  const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-30);
+  const cutoffKey=cutoff.toLocaleDateString('sv-SE',{timeZone:'Asia/Jakarta'});
+  const last30=source.filter(e=>e.date>=cutoffKey), todayEntries=source.filter(e=>e.date===td);
+  const used=last30.filter(isUsed).length, saved=last30.reduce((sum,e)=>sum+timeSaved(e),0), prompts=last30.filter(isShared).length, impacts=last30.filter(hasImpact).length;
+  if(manager){
+    const checked=distinctBy(todayEntries,e=>(e.by||e.name).toLowerCase());
+    const total=state.members.length||new Set(last30.map(e=>e.name)).size||0;
+    const adoption=total?Math.min(100,Math.round(checked.length/total*100)):0;
+    setKpiCard('kpiAdoption',`${adoption}%`,'AI Adoption Rate',`${checked.length} dari ${total} member`,'Hari ini');
+    setKpiCard('kpiUsed',used.toLocaleString('id-ID'),'Output Digunakan','Status Used / Standardized','30 hari');
+    setKpiCard('kpiSaved',formatHours(saved),'Jam Kerja Dihemat','Berdasarkan worklog','Estimasi');
+    setKpiCard('kpiPrompts',prompts.toLocaleString('id-ID'),'Prompt Siap Pakai','Dibagikan ke tim','Reusable');
+    setKpiCard('kpiImpact',impacts.toLocaleString('id-ID'),'Impact Terukur','Memiliki KPI before-after','Measured');
+    renderAdoptionChart(todayEntries);
+    renderLeaderboard();
+    renderMissing(todayEntries);
+  } else {
+    const activeDays=new Set(last30.map(e=>e.date)).size;
+    setKpiCard('kpiAdoption',`${activeDays} hari`,'Hari Aktif AI','30 hari terakhir','Personal');
+    setKpiCard('kpiUsed',used.toLocaleString('id-ID'),'Output Saya Digunakan','Status Used / Standardized','30 hari');
+    setKpiCard('kpiSaved',formatHours(saved),'Waktu Saya Dihemat','Berdasarkan worklog pribadi','Estimasi');
+    setKpiCard('kpiPrompts',prompts.toLocaleString('id-ID'),'Prompt Saya Dibagikan','Masuk Prompt Library','Reusable');
+    setKpiCard('kpiImpact',impacts.toLocaleString('id-ID'),'Impact Saya Terukur','Memiliki KPI before-after','Measured');
+  }
   renderRecent();
-  renderMissing(todayEntries);
 }
-
 function renderAdoptionChart(todayEntries){
   const teams=[...new Set([...WORKSTREAMS,...state.members.map(m=>m.team),...todayEntries.map(e=>e.team)].filter(Boolean))];
   const rows=teams.map(team=>{
@@ -1153,7 +1247,7 @@ function renderLeaderboard(){
 }
 
 function renderRecent(){
-  const rows=state.entries.slice(0,10), body=document.getElementById('recentBody');
+  const rows=visibleEntries().slice(0,10), body=document.getElementById('recentBody');
   body.innerHTML=rows.length?rows.map(e=>`<tr><td><div class="cell-main">${escapeHtml(e.name)}</div><div class="cell-sub">${escapeHtml(e.by||'')}</div></td><td>${escapeHtml(e.team||'-')}</td><td><div class="cell-main">${escapeHtml(e.meta.campaign||e.useCase||'-')}</div><div class="cell-sub prompt-cell">${escapeHtml(e.meta.task||e.prompt||'-')}</div></td><td>${statusBadge(e.meta.status)}</td><td class="mono">${formatHours(timeSaved(e))}</td><td><div class="cell-main">${escapeHtml(e.date)}</div><div class="cell-sub">${escapeHtml(e.time)}</div></td><td><button class="mini-btn" onclick="openDetail('${escapeHtml(e.id)}')">›</button></td></tr>`).join(''):'<tr><td colspan="7"><div class="empty-state">Belum ada worklog.</div></td></tr>';
 }
 
@@ -1248,6 +1342,7 @@ async function copyPrompt(id){
 }
 
 function renderAnalytics(){
+  if(!isManagerRole()) return;
   const days=Number(document.getElementById('analyticsPeriod')?.value||30), data=entriesWithin(days);
   const active=new Set(data.map(e=>e.name)).size, used=data.filter(isUsed).length, saved=data.reduce((s,e)=>s+timeSaved(e),0), ratings=data.map(e=>Number(e.meta.quality)||0).filter(Boolean);
   document.getElementById('aActive').textContent=active;
@@ -1267,7 +1362,7 @@ function inferPositiveImpact(e){
   return lowerIsBetter?b<a:b>a;
 }
 function renderImpact(){
-  const data=state.entries.filter(hasImpact), positive=data.filter(e=>inferPositiveImpact(e)===true).length, campaigns=new Set(data.map(e=>e.meta.campaign).filter(Boolean)).size, hours=data.reduce((s,e)=>s+timeSaved(e),0);
+  const data=visibleEntries().filter(hasImpact), positive=data.filter(e=>inferPositiveImpact(e)===true).length, campaigns=new Set(data.map(e=>e.meta.campaign).filter(Boolean)).size, hours=data.reduce((s,e)=>s+timeSaved(e),0);
   document.getElementById('iMeasured').textContent=data.length;
   document.getElementById('iPositive').textContent=positive;
   document.getElementById('iCampaigns').textContent=campaigns;
@@ -1276,14 +1371,16 @@ function renderImpact(){
 }
 
 function renderAdmin(){
+  if(!isManagerRole()) return;
   const pending=state.entries.filter(e=>e.sync==='pending').length, rich=state.entries.filter(e=>e.meta.version==='v1').length, complete=state.entries.filter(e=>e.meta.version==='v1'&&e.meta.output&&e.meta.status).length;
   document.getElementById('dataHealth').innerHTML=`<div class="health-row"><span>Server status</span><strong style="color:${state.online?'#6ee7b7':'#fda4af'}">${state.online?'Online':'Offline'}</strong></div><div class="health-row"><span>Total worklog</span><strong>${state.entries.length}</strong></div><div class="health-row"><span>Format baru</span><strong>${rich}</strong></div><div class="health-row"><span>Worklog lengkap</span><strong>${complete}</strong></div><div class="health-row"><span>Pending sync lokal</span><strong style="color:${pending?'#fcd34d':'#6ee7b7'}">${pending}</strong></div>`;
   document.getElementById('memberCount').textContent=`${state.members.length} anggota terdaftar`;
-  document.getElementById('memberList').innerHTML=state.members.length?state.members.map(m=>`<div class="member-row"><div class="member-info"><div class="avatar">${escapeHtml(initials(m.name).toUpperCase())}</div><div><div class="member-name">${escapeHtml(m.name)}</div><div class="member-team">${escapeHtml(m.team)}</div></div></div><span class="badge badge-green">Active</span></div>`).join(''):'<div class="empty-state">Member belum tersedia dari backend.</div>';
+  document.getElementById('memberList').innerHTML=state.members.length?state.members.map(m=>`<div class="member-row"><div class="member-info"><div class="avatar">${escapeHtml(initials(m.name).toUpperCase())}</div><div><div class="member-name">${escapeHtml(m.name)}</div><div class="member-team">${escapeHtml(m.team)} · ${escapeHtml(roleLabel(normalizeRole(m.role)))}</div></div></div><span class="badge badge-green">Active</span></div>`).join(''):'<div class="empty-state">Member belum tersedia dari backend.</div>';
 }
 
 function openDetail(id){
   const e=state.entries.find(x=>String(x.id)===String(id)); if(!e) return toast('Worklog tidak ditemukan.','error');
+  if(!isManagerRole()&&!entryBelongsToUser(e)&&!isShared(e)) return toast('Anda tidak memiliki akses ke worklog ini.','warning');
   document.getElementById('modalSubtitle').textContent=`${e.name} · ${formatDateTime(e)}`;
   const m=e.meta;
   const items=[['Workstream',e.team],['Campaign',m.campaign||'-'],['Task',m.task||e.useCase],['Channel',m.channel||'-'],['Objective',m.objective||'-'],['Status',STATUS_LABEL[m.status]||m.status],['AI Tools',e.tools.join(', ')||'-'],['Data Class',m.dataClass||'-'],['Time Before',`${m.before||0} menit`],['Time After',`${m.after||0} menit`],['Time Saved',`${timeSaved(e)} menit`],['Quality',m.quality?`${m.quality}/5`:'-'],['Metric',m.metric||'-'],['Baseline',m.baseline||'-'],['Result',m.result||'-'],['Prompt',e.prompt||'-'],['Output',m.output||'-'],['Output Link',m.outputLink||'-']];
@@ -1300,11 +1397,11 @@ function downloadCSV(name,rows){
 }
 function exportCSV(){
   const header=['Tanggal','Waktu','Nama','Email','Workstream','Campaign','Task','Channel','AI Tools','Prompt','Output','Status','Time Before','Time After','Time Saved','Metric','Baseline','Result','Output Link','Share','Data Class','Quality'];
-  const rows=state.entries.map(e=>[e.date,e.time,e.name,e.by,e.team,e.meta.campaign,e.meta.task||e.useCase,e.meta.channel,e.tools.join('; '),e.prompt,e.meta.output,e.meta.status,e.meta.before,e.meta.after,timeSaved(e),e.meta.metric,e.meta.baseline,e.meta.result,e.meta.outputLink,e.meta.share,e.meta.dataClass,e.meta.quality]);
+  const rows=visibleEntries().map(e=>[e.date,e.time,e.name,e.by,e.team,e.meta.campaign,e.meta.task||e.useCase,e.meta.channel,e.tools.join('; '),e.prompt,e.meta.output,e.meta.status,e.meta.before,e.meta.after,timeSaved(e),e.meta.metric,e.meta.baseline,e.meta.result,e.meta.outputLink,e.meta.share,e.meta.dataClass,e.meta.quality]);
   downloadCSV(`fastpay-ai-worklog-${todayWIB()}.csv`,[header,...rows]);
 }
 function exportImpactCSV(){
-  const data=state.entries.filter(hasImpact); downloadCSV(`fastpay-ai-impact-${todayWIB()}.csv`,[['Campaign','Member','Workstream','Task','Metric','Baseline','Result','Time Saved','Output Link'],...data.map(e=>[e.meta.campaign,e.name,e.team,e.meta.task,e.meta.metric,e.meta.baseline,e.meta.result,timeSaved(e),e.meta.outputLink])]);
+  const data=visibleEntries().filter(hasImpact); downloadCSV(`fastpay-ai-impact-${todayWIB()}.csv`,[['Campaign','Member','Workstream','Task','Metric','Baseline','Result','Time Saved','Output Link'],...data.map(e=>[e.meta.campaign,e.name,e.team,e.meta.task,e.meta.metric,e.meta.baseline,e.meta.result,timeSaved(e),e.meta.outputLink])]);
 }
 
 async function testApiFromAdmin(){
@@ -1316,7 +1413,7 @@ function saveAdminApi(){
   const url=document.getElementById('adminApi').value.trim(); if(!/^https:\/\/script\.google\.com\//.test(url)) return toast('URL Apps Script tidak valid.','error');
   localStorage.setItem(STORAGE.api,url); toast('Endpoint API disimpan. Halaman akan dimuat ulang.'); setTimeout(()=>location.reload(),700);
 }
-async function refreshAll(){ await Promise.allSettled([ping(),loadMembers(),loadEntries(),loadAnalysis(false)]); renderAll(); toast('Data diperbarui.'); }
+async function refreshAll(){ const jobs=[ping(),loadMembers(),loadEntries()]; if(isManagerRole()) jobs.push(loadAnalysis(false)); await Promise.allSettled(jobs); resolveProfileFromMembers(); hydrateProfile(); applyRoleAccess(); renderAll(); toast('Data diperbarui.'); }
 
 let toastTimer;
 function toast(message,type='success'){
